@@ -9,7 +9,7 @@ const StyledInput = styled.input`
   color: ${(props) => (props.readOnly ? '#6B6B6B' : '#6B6B6B')};
 
   &:focus {
-    outline: ${(props) => (props.readOnly ? 'none' : '')};
+    outline-color: ${(props) => (props.readOnly ? 'none' : '#39b54a')};
   }
 `;
 

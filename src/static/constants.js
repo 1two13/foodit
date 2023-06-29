@@ -60,6 +60,10 @@ const JOIN = '참여하기';
 // ProfileEditPage
 const EDIT = '수정하기';
 
+// SearchedOutputList
+const TIMEOUT = 100;
+const ERROR_ALERT_MESSAGE = 'something went wrong';
+
 export {
   PERMISSION_FIRST_TITLE,
   PERMISSION_SECOND_TITLE,
@@ -104,4 +108,6 @@ export {
   EDIT,
   MOVE_TO_HOME,
   REGISTER_LOCATION_COMPLETE,
+  TIMEOUT,
+  ERROR_ALERT_MESSAGE,
 };

@@ -5,15 +5,14 @@ const Div = styled.div`
   background-color: ${(props) => props.color || '#39B54A'};
 `;
 
-function FriendProfile({ name = '', role = '', svg, color }) {
+function FriendProfile({ name = '', svg, color }) {
   return (
     <div className="flex flex-col items-center w-[56px] relative">
       <div className="flex flex-col items-center justify-center">
         <Div className="w-[45px] h-[45px] rounded-full" color={color}></Div>
       </div>
       {svg}
-      <div className="h-[20px] text-[13px]">{name}</div>
-      <div className="h-[12px] text-[9px] text-smokeGray">{role}</div>
+      <div className="h-[20px] pt-[4px] text-[11px]">{name}</div>
     </div>
   );
 }

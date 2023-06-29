@@ -1,9 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { debounce } from 'lodash';
+import { saveUserInfo } from '../redux/api/authApi';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import IdPasswordForm from '../components/common/IdPasswordForm';
-import { debounce } from 'lodash';
+import { signupFailure, signupStart, signupSuccess } from '../redux/slices/authSlice';
+import {
+  setEmail,
+  setPassword,
+  setPasswordCheck,
+  setNickname,
+  setErrors,
+  resetFields,
+} from '../redux/slices/registerSlice';
 
 const RegisterPage = () => {
   const inputFields = [
@@ -17,24 +28,30 @@ const RegisterPage = () => {
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
   const existedEmail = 'test@test.com';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [errors, setErrors] = useState({
-    email: { message: '아이디를 입력해주세요.', isError: false },
-    password: { message: '8~16자리의 비밀번호를 입력해주세요.', isError: false },
-    passwordCheck: { message: '확인을 위하여 위와 동일하게 입력해주세요.', isError: false },
-    nickname: { message: '', isError: false },
-  });
+  const { email, password, passwordCheck, nickname, errors } = useSelector((state) => state.register);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // 회원가입 API 호출
+  const callSaveUserInfo = async () => {
+    try {
+      dispatch(signupStart());
+      await saveUserInfo({ email, password, nickname });
+      dispatch(signupSuccess({ email }));
+      dispatch(resetFields());
+      navigate(`/permission`);
+    } catch (error) {
+      dispatch(signupFailure(error.message));
+    }
+  };
+
+  // 유효성 검사 후 상태 업데이트
   const validateField = useCallback(
     debounce((name, value) => {
       const validationErrors = { ...errors };
-
+      console.log(name, value);
       if (name === 'email') {
-        setEmail(value);
+        dispatch(setEmail(value));
         validationErrors.email = {
           message:
             value.trim() === ''
@@ -47,7 +64,7 @@ const RegisterPage = () => {
           isError: value.trim() === '' || !emailRegex.test(value) || value === existedEmail,
         };
       } else if (name === 'password') {
-        setPassword(value);
+        dispatch(setPassword(value));
         validationErrors.password = {
           message:
             value.trim() === ''
@@ -58,7 +75,7 @@ const RegisterPage = () => {
           isError: value.trim() === '' || value.length < 8 || value.length > 16,
         };
       } else if (name === 'passwordCheck') {
-        setPasswordCheck(value);
+        dispatch(setPasswordCheck(value));
         validationErrors.passwordCheck = {
           message:
             value.trim() === ''
@@ -69,22 +86,23 @@ const RegisterPage = () => {
           isError: value.trim() === '' || value !== password,
         };
       } else if (name === 'nickname') {
-        setNickname(value);
+        dispatch(setNickname(value));
         validationErrors.nickname = {
           message: value.trim() === '' ? '닉네임을 입력해주세요.' : '',
           isError: value.trim() === '',
         };
       }
 
-      setErrors(validationErrors);
+      dispatch(setErrors(validationErrors));
     }, 300),
-    [errors, emailRegex, existedEmail, setEmail, setPassword, setPasswordCheck, setNickname],
+    [errors, emailRegex, existedEmail, email, password, passwordCheck, nickname],
   );
 
   // 유효성검사 확인 후 폼제출
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = {};
+
     inputFields.forEach((field) => {
       if (field.id === 'email' && email.trim() === '') {
         validationErrors[field.id] = { message: `${field.label}를 입력해주세요.`, isError: true };
@@ -105,16 +123,10 @@ const RegisterPage = () => {
 
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
 
-    setErrors(validationErrors);
+    dispatch(setErrors(validationErrors));
 
     if (isFormValid) {
-      console.log('회원가입이 완료되었습니다.');
-      setNickname('');
-      setEmail('');
-      setPassword('');
-      setPasswordCheck('');
-      setErrors({});
-      navigate(`/register-complete`);
+      callSaveUserInfo();
     }
   };
 
@@ -126,7 +138,7 @@ const RegisterPage = () => {
       validationErrors[field.id] = errors[field.id];
     });
 
-    setErrors(validationErrors);
+    dispatch(setErrors(validationErrors));
   }, []);
 
   return (
@@ -148,12 +160,12 @@ const RegisterPage = () => {
           {/* 닉네임 */}
           {nicknameField && (
             <IdPasswordForm
-              key="nickname"
+              key={nicknameField.id}
               autoComplete="off"
               label={nicknameField.label}
               type={nicknameField.type}
               color={errors.nickname.isError ? '#ff0000' : '#d9d9d9'}
-              onChange={(event) => validateField('nickname', event.target.value)}
+              onChange={(event) => validateField(nicknameField.id, event.target.value)}
               errors={errors.nickname}
             />
           )}

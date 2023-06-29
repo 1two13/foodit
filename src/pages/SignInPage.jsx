@@ -1,29 +1,43 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { debounce } from 'lodash';
 import Input from '../components/common/Input';
 import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
+import { setEmail, setError, setPassword } from '../redux/slices/signinSlice';
 
 const SignInPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { email, error } = useSelector((state) => state.signin);
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const [isButtonClicked, setIsButtonClicked] = useState(false);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onChangeHandler = (event) => {
-    event.preventDefault();
-    const { name, value } = event.target;
-    if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'password') {
-      setPassword(value);
+  // 응답 데이터의 이메일 정보를 이메일 입력 필드에 자동으로 채워넣기
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('signup-email');
+    if (storedEmail) {
+      dispatch(setEmail(storedEmail));
     }
-    console.log(event.target);
-  };
+  }, []);
 
+  // 아이디/비밀번호 상태관리 & 디바운스 처리
+  const onChangeHandler = useCallback(
+    debounce((event) => {
+      event.preventDefault();
+      const { name, value } = event.target;
+      if (name === 'email') {
+        dispatch(setEmail(value));
+      } else if (name === 'password') {
+        dispatch(setPassword(value));
+      }
+      console.log(value);
+    }, 300),
+    [dispatch],
+  );
+
+  // 로그인 시도
   const handleSignIn = () => {
     setIsButtonClicked(true);
     try {
@@ -32,14 +46,16 @@ const SignInPage = () => {
         navigate('/');
       } else {
         console.log('로그인 실패');
-        setErrorMessage('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.');
+        dispatch(setError('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.'));
         setLoginSuccess(false);
       }
     } catch (error) {}
   };
 
-  const handleMoveRegisterPage = () => {
-    navigate('/register');
+  // 회원가입 페이지 & 게스트 로그인 이동
+  /** 게스트 로그인은 추후 서버에서 데이터 받아와서 연결 필요 */
+  const handleMovePage = (route) => {
+    navigate(route);
   };
 
   return (
@@ -48,28 +64,29 @@ const SignInPage = () => {
       <form className="input-wrapper flex flex-wrap justify-center mt-[122px]">
         <Input
           type={'text'}
-          value={email}
           placeholder={'아이디(이메일) 입력'}
           mb={'15px'}
+          value={email ? email : null}
           onChange={onChangeHandler}
           color={isButtonClicked && !loginSuccess ? '#ff0000' : '#d9d9d9'}
         />
         <Input
           type={'password'}
-          value={password}
           placeholder={'비밀번호 입력'}
           autoComplete={'autoComplete'}
           onChange={onChangeHandler}
           color={isButtonClicked && !loginSuccess ? '#ff0000' : '#d9d9d9'}
         />
         {!loginSuccess && isButtonClicked && (
-          <span className="text-[13px] relative left-[-25px] mt-[15px] text-[#ff0000]">{errorMessage}</span>
+          <span className="text-[13px] relative left-[-25px] mt-[15px] text-[#ff0000]">{error}</span>
         )}
       </form>
       <LongButton type={'submit'} contents={'로그인'} bottom={'405px'} onClick={handleSignIn} />
       <div className="w-full h-[44px] px-[15px] fixed top-[444px] left-1/2 translate-x-[-50%] flex flex-nowrap justify-between text-[13px] text-gray text-center leading-[44px]">
-        <p className="cursor-pointer">게스트 로그인</p>
-        <p className="cursor-pointer" onClick={handleMoveRegisterPage}>
+        <p className="cursor-pointer" onClick={() => handleMovePage('/')}>
+          게스트 로그인
+        </p>
+        <p className="cursor-pointer" onClick={() => handleMovePage('/register')}>
           회원가입
         </p>
       </div>

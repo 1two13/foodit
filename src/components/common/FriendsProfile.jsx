@@ -1,12 +1,18 @@
 import React from 'react';
+
+import { useSelector } from 'react-redux';
 import FriendProfile from './FriendProfile';
 
-function FriendsProfile({ role }) {
+function FriendsProfile() {
+  let friendsList = useSelector((state) => state.friends.friendsList);
+  let recruteList = JSON.parse(localStorage.getItem('recruteList'));
+  let isJoin = JSON.parse(localStorage.getItem('isJoin'));
+  console.log(friendsList, recruteList);
+
   return (
-    <div className="mt-[22px] flex items-center pb-[11px] gap-[20px] border-b-[0.5px] border-gray">
+    <div className="mt-[22px] flex items-center pb-[17px] gap-[20px] border-b-[0.5px] border-gray">
       <FriendProfile
         name="동네친구"
-        role={role}
         svg={
           <svg
             className="absolute top-[-12px]"
@@ -23,10 +29,32 @@ function FriendsProfile({ role }) {
           </svg>
         }
       />
-      <FriendProfile name="친구1" role={role} color={'#00C92C'} />
-      <FriendProfile name="친구2" role={role} color={'#FF6B00'} />
-      <FriendProfile name="파티원3" role={role} color={'#A4A4A4'} />
-      <FriendProfile color={'#F0F0F0'} />
+
+      {!isJoin
+        ? friendsList.map((el, index) => (
+            <FriendProfile key={index} name={el ? '모집대기중' : ''} color={el ? '#A4A4A4' : '#F0F0F0'} />
+          ))
+        : recruteList.map((el, index) => (
+            <FriendProfile
+              key={index}
+              name={el === '파티원' || el === '모집대기중' ? el : ''}
+              color={
+                el === '파티원'
+                  ? index === 0
+                    ? '#FF6B00'
+                    : index === 1
+                    ? '#2572E5'
+                    : index === 2
+                    ? '#FFD600'
+                    : index === 3
+                    ? '#EE0707'
+                    : '#EE0707'
+                  : el === '모집대기중'
+                  ? '#A4A4A4'
+                  : '#F0F0F0'
+              }
+            />
+          ))}
     </div>
   );
 }

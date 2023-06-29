@@ -9,7 +9,7 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
         <div className="flex flex-col items-center mx-[16px] mb-[20px] pb-[9px] border-b-[0.5px] border-gray">
           <div className="text-[16px] font-bold">{'우리동네'}</div>
         </div>
-        <button className="float-right mt-[10px] absolute top-[-8px] right-[4%]">{writingSvg}</button>
+        <button className="float-right mt-[10px] absolute top-[21px] right-[4%]">{writingSvg}</button>
       </div>
     </div>
   );

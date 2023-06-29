@@ -23,9 +23,11 @@ function EditProfilePage() {
     password: { message: '', isError: false },
     passwordCheck: { message: '', isError: false },
   });
+
   // 유효성 검사
   const validateField = (name, value) => {
     const validationErrors = { ...errors };
+
     if (name === 'password') {
       setPassword(value);
       validationErrors.password = {
@@ -40,11 +42,14 @@ function EditProfilePage() {
         isError: value.trim() === '' || value !== password,
       };
     }
+
     setErrors(validationErrors);
   };
+
   // 유효성검사 확인 후 폼제출
   const handleSubmit = (event) => {
     event.preventDefault();
+
     const validationErrors = {};
     Object.keys(errors).forEach((key) => {
       if (validationErrors[key] === undefined) {
@@ -52,6 +57,7 @@ function EditProfilePage() {
       }
     });
     setErrors(validationErrors);
+
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
     if (isFormValid) {
       setPassword('');
@@ -68,6 +74,7 @@ function EditProfilePage() {
 
       <form className="flex flex-wrap justify-center">
         <div className="flex flex-wrap w-[360px]">
+          {/* TODO: 아이디의 경우 저장된 아이디 값 보여주기 */}
           {inputFields.slice(0, 3).map((field) => (
             <React.Fragment key={field.id}>
               <IdPasswordForm

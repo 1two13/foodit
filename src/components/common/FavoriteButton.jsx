@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FavoriteButton = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const navigate = useNavigate();
   const handleAddFavorite = () => {
+    navigate('/favorite-categories');
     if (selectedCategory) {
       console.log(`추가 - 선택된 카테고리: ${selectedCategory}`);
     }

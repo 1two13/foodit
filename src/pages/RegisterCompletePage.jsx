@@ -10,6 +10,7 @@ const RegisterCompletePage = () => {
   const handleMoveSignIn = () => {
     navigate(`/signin`);
   };
+  const nickname = localStorage.getItem('signup-nickname');
 
   return (
     <>
@@ -21,8 +22,7 @@ const RegisterCompletePage = () => {
         mainMessage={'회원가입 완료'}
         subMessage={
           <>
-            {/* data 받아와서 user.name 넣어주기 */}
-            동네친구님(아이디)의 회원가입이
+            {/* data 받아와서 user.name 넣어주기 */}'{nickname}' 님의 회원가입이
             <br />
             성공적으로 완료되었습니다.
           </>

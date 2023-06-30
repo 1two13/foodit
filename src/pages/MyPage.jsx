@@ -57,7 +57,7 @@ function MyPage() {
       </div>
 
       <div>
-        <MyPageCategory name={SETTING_LOCATION} />
+        <MyPageCategory name={SETTING_LOCATION} onClick={() => navigate('/register-location')} />
         <MyPageCategory name={CHANGE_INFO} onClick={() => navigate('/editProfile')} />
         <MyPageCategory name={LOGOUT} color={'#EE0707'} onClick={handleLogout} />
       </div>

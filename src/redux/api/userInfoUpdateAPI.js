@@ -46,16 +46,19 @@ export const getUserInfoAPI = createAsyncThunk('signin/inquireUserInfo', async (
 });
 
 /** 사용자 정보(비밀번호) 변경 */
-export const updatePasswordAPI = async ({ username }) => {
-  try {
-    const response = await axios.post(`${BASE_URL}/user/modify`, username);
-    const result = response.data;
-    console.log(result);
-    return result;
-  } catch (error) {
-    throw new Error(error.message);
+export const updatePasswordAPI = createAsyncThunk(
+  'userInfoChange/updatePassword',
+  async ({ username }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/user/modify`, { username });
+      const result = response.data;
+      console.log(result);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
-};
+);
 
 /** 사용자 정보(닉네임) 변경 */
 export const updateNicknameAPI = createAsyncThunk(

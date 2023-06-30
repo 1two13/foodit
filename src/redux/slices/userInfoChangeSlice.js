@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { updateNicknameAPI } from '../api/userInfoUpdateAPI';
+import { updateNicknameAPI, updatePasswordAPI } from '../api/userInfoUpdateAPI';
 
 const userInfoChangeSlice = createSlice({
   name: 'userInfoChange',
@@ -54,17 +54,24 @@ const userInfoChangeSlice = createSlice({
         state.isLoading = false;
         state.updateError = action.payload;
         alert('닉네임을 입력해주세요.');
+      })
+      .addCase(updatePasswordAPI.pending, (state) => {
+        state.isLoading = true;
+        state.updateError = null;
+      })
+      .addCase(updatePasswordAPI.fulfilled, (state, action) => {
+        state.isLoading = false;
+        alert('비밀번호 변경이 완료되었습니다.');
+        state.updateError = null;
+      })
+      .addCase(updatePasswordAPI.rejected, (state, action) => {
+        state.isLoading = false;
+        state.updateError = action.payload;
       });
   },
 });
 
-export const {
-  setNewPasswordCheck,
-  setNewPassword,
-  getCurrentNickname,
-  setNewNickname,
-  setErrors,
-  resetFields,
-} = userInfoChangeSlice.actions;
+export const { setNewPasswordCheck, setNewPassword, getCurrentNickname, setNewNickname, setErrors, resetFields } =
+  userInfoChangeSlice.actions;
 
 export default userInfoChangeSlice.reducer;

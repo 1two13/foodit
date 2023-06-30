@@ -9,15 +9,8 @@ import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import IdPasswordForm from '../components/common/IdPasswordForm';
 
 import { EDIT, CHANGE_INFO } from '../static/constants';
-import {
-  resetFields,
-  setErrors,
-  setNewPassword,
-  setNewPasswordCheck,
-  updatePasswordFailure,
-  updatePasswordStart,
-  updatePasswordSuccess,
-} from '../redux/slices/userInfoChangeSlice';
+import { resetFields, setErrors, setNewPassword, setNewPasswordCheck } from '../redux/slices/userInfoChangeSlice';
+import { updatePasswordAPI } from '../redux/api/userInfoUpdateAPI';
 
 function EditProfilePage() {
   const inputFields = [
@@ -26,7 +19,7 @@ function EditProfilePage() {
     { id: 'newPasswordCheck', label: '비밀번호 재확인', type: 'password' },
   ];
   const { newPassword, newPasswordCheck, errors } = useSelector((state) => state.userInfoChange);
-
+  const username = localStorage.getItem('username');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -63,19 +56,11 @@ function EditProfilePage() {
   );
 
   /** 비밀번호 변경 */
-  const updatePassword = () => {
-    return async (dispatch) => {
-      try {
-        dispatch(updatePasswordStart());
-        await dispatch(updatePasswordSuccess({ newPassword }));
-        alert('비밀번호 변경이 완료되었습니다.');
-        dispatch(resetFields());
-        navigate('/myPage');
-      } catch (error) {
-        dispatch(updatePasswordFailure(error.message));
-      }
-    };
-  };
+  const handleUpdatePassword = useCallback(() => {
+    dispatch(updatePasswordAPI({ username, newPassword }));
+    dispatch(resetFields());
+    navigate('/myPage');
+  }, [dispatch, newPassword]);
 
   /** 유효성검사 확인 후 폼제출 */
   const handleSubmit = (event) => {
@@ -92,7 +77,7 @@ function EditProfilePage() {
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
 
     if (isFormValid) {
-      dispatch(updatePassword());
+      dispatch(handleUpdatePassword());
       console.log('클릭');
     }
   };

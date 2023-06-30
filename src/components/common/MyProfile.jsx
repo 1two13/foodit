@@ -4,17 +4,14 @@ import { FcCheckmark } from 'react-icons/fc';
 import { debounce } from 'lodash';
 import {
   setErrors,
-  setNewNickname,
-  updateNicknameFailure,
-  updateNicknameStart,
-  updateNicknameSuccess,
+  setNewNickname
 } from '../../redux/slices/userInfoChangeSlice';
+import { updateNicknameAPI } from '../../redux/api/userInfoUpdateAPI';
 
 function MyProfile({ cameraSvg = '', writingSvg }) {
   const [isEditing, setIsEditing] = useState(false);
   const { newNickname, errors } = useSelector((state) => state.userInfoChange);
-
-  /** TODO: 서버에서 가져온 데이터로 추후 변경 */
+  const username = localStorage.getItem('username');
   const nickname = localStorage.getItem('nickname');
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -36,15 +33,9 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
   };
 
   /** 닉네임 변경 시도 */
-  const updateNickname = useCallback(async () => {
+  const handleUpdateNickname = useCallback(() => {
     isUpdateMode();
-
-    try {
-      dispatch(updateNicknameStart());
-      await dispatch(updateNicknameSuccess({ newNickname }));
-    } catch (error) {
-      dispatch(updateNicknameFailure(error.message));
-    }
+    dispatch(updateNicknameAPI({ username, nickname: newNickname }));
   }, [dispatch, newNickname]);
 
   /** 닉네임 유효성 검사 */
@@ -80,7 +71,7 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
         </div>
         <button
           className="text-[20px] float-right mt-[10px] absolute top-[21px] right-[4%]"
-          onClick={() => updateNickname()}
+          onClick={() => handleUpdateNickname()}
         >
           {isEditing ? <FcCheckmark /> : writingSvg}
         </button>

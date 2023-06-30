@@ -47,7 +47,7 @@ const SignInPage = () => {
     try {
       dispatch(loginStart());
       const response = await dispatch(loginSuccess({ username, password }));
-      
+
       if (response.payload) {
         const { loginSuccess } = response.payload;
 

@@ -89,6 +89,7 @@ function PostsPage() {
     dispatch(writingSlice.actions.setTotalAmount(0));
     dispatch(writingSlice.actions.setMaxPeople(1));
     dispatch(writingSlice.actions.setTextarea(''));
+    localStorage.setItem('isJoin', false);
   };
 
   return (

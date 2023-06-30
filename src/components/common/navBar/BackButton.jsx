@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function BackButton({ onClickHandler }) {
   const navigate = useNavigate();
-  const onClick = () => {
-    navigate(-1);
-  };
+  const onClick = () => (onClickHandler ? navigate('/') : navigate(-1));
 
   return (
     <button className="flex justify-center items-center w-[44px] h-[44px]" onClick={onClick}>

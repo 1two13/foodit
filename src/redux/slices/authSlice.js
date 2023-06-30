@@ -1,8 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { signInAPI, signupAPI, logoutAPI } from '../api/authApi';
+import { signInAPI, logoutAPI } from '../api/authApi';
+import { saveUserInfo } from '../api/authApi';
 
 const initialState = {
-  user: null,
+  user: {
+    id: '',
+    username: '',
+    password: '',
+    nickname: '',
+    address: '',
+  },
   isLoading: false,
   error: null,
 };
@@ -18,6 +25,7 @@ const authSlice = createSlice({
     loginSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;
+      signInAPI(state.user);
       state.error = null;
     },
     loginFailure(state, action) {
@@ -30,6 +38,7 @@ const authSlice = createSlice({
     },
     logoutSuccess: (state) => {
       state.isLoading = false;
+      logoutAPI();
       state.error = null;
     },
     logoutFailure: (state, action) => {
@@ -43,6 +52,7 @@ const authSlice = createSlice({
     signupSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;
+      saveUserInfo(state.user);
       state.error = null;
     },
     signupFailure(state, action) {
@@ -63,27 +73,5 @@ export const {
   signupSuccess,
   signupFailure,
 } = authSlice.actions;
-
-export const login =
-  ({ email, password }) =>
-  async (dispatch) => {
-    try {
-      dispatch(loginStart());
-      await signInAPI({ email, password });
-      dispatch(loginSuccess({ email }));
-    } catch (error) {
-      dispatch(loginFailure(error.message));
-    }
-  };
-
-export const logout = () => async (dispatch) => {
-  try {
-    dispatch(logoutStart());
-    await logoutAPI();
-    dispatch(logoutSuccess());
-  } catch (error) {
-    dispatch(logoutFailure(error.message));
-  }
-};
 
 export default authSlice.reducer;

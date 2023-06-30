@@ -7,6 +7,7 @@ const initialState = {
   totalAmount: 0,
   maxPeople: 1,
   textarea: '',
+  writingPage: false,
 };
 
 export const writingSlice = createSlice({
@@ -36,6 +37,9 @@ export const writingSlice = createSlice({
     setTextarea: (state, action) => {
       state.textarea = action.payload;
       localStorage.setItem('textarea', JSON.stringify(state.textarea));
+    },
+    wasWritingPage: (state, action) => {
+      state.writingPage = true;
     },
   },
 });

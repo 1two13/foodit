@@ -90,7 +90,11 @@ function WritingPage() {
     dispatch(writingSlice.actions.setTextarea(e.target.value));
   };
 
-  const onclickDoneButton = () => navigate('/posts');
+  const onclickDoneButton = () => {
+    dispatch(writingSlice.actions.wasWritingPage());
+    // TODO: 작성한 글 데이터를 서버로 보내기
+    navigate('/posts');
+  };
 
   return (
     <div className="mt-[47px]">
@@ -178,8 +182,8 @@ function WritingPage() {
         className="w-[92%] h-[150px] py-[20px] mx-[15px] focus:outline-none text-[13px] text-darkGray"
       />
 
-      {!title || totalAmount === 0 || !textarea ? (
-        <LongButton contents={DONE} className="disabled" background={'#CCCCCC'} customStyle={'disabled'} />
+      {title.length === 0 || totalAmount === 0 || !textarea ? (
+        <LongButton contents={DONE} background={'#CCCCCC'} customStyle={'disabled'} />
       ) : (
         <LongButton contents={DONE} onClick={onclickDoneButton} />
       )}

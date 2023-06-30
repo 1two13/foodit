@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import FriendProfile from './FriendProfile';
 
 function FriendsProfile() {
+  // FIXME: 서버에서 가져온 데이터를 기반으로 보여주기
   let friendsList = useSelector((state) => state.friends.friendsList);
   let recruteList = JSON.parse(localStorage.getItem('recruteList'));
   let isJoin = JSON.parse(localStorage.getItem('isJoin'));

@@ -5,20 +5,41 @@ import Swal from 'sweetalert2';
 import BackButton from '../components/common/navBar/BackButton';
 import FriendsProfile from '../components/common/FriendsProfile';
 import { friendsSlice } from '../redux/slices/friendsSlice';
+import { writingSlice } from '../redux/slices/writingSlice';
 
+import totalGray from '../images/totalGray.png';
+import aquaticGray from '../images/aquaticGray.png';
+import breadGray from '../images/breadGray.png';
+import ecoGray from '../images/ecoGray.png';
+import fruitGray from '../images/fruitGray.png';
+import kimchiGray from '../images/kimchiGray.png';
+import meatGray from '../images/meatGray.png';
+import milkGray from '../images/milkGray.png';
+import waterGray from '../images/waterGray.png';
+import noodlesGray from '../images/noodlesGray.png';
+import riceGray from '../images/riceGray.png';
+import seasoningGray from '../images/seasoningGray.png';
+import snackGray from '../images/snackGray.png';
+import vegetableGray from '../images/vegetableGray.png';
+import coffeeGray from '../images/coffeeGray.png';
 import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT, JOIN } from '../static/constants';
 
 function PostsPage() {
   const dispatch = useDispatch();
+  const wasWritingPage = useSelector((state) => state.writing.writingPage);
 
   const imageUrl = JSON.parse(localStorage.getItem('imageUrl'));
   const title = JSON.parse(localStorage.getItem('title'));
   const category = JSON.parse(localStorage.getItem('category'));
   const totalAmount = JSON.parse(localStorage.getItem('totalAmount'));
-  const maxPeople = JSON.parse(localStorage.getItem('maxPeople'));
+  let maxPeople = useSelector((state) => state.writing.maxPeople);
   const textarea = JSON.parse(localStorage.getItem('textarea'));
   const divisionAmount = (totalAmount / (maxPeople + 1)).toLocaleString();
 
+  // TODO: 1. 글 작성 후 등록된 글을 확인하는 페이지로 넘어오는 경우 => 글 작성 페이지에서 선택한 인원수만큼 보여주기
+  if (wasWritingPage) {
+  }
+  // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
   let friendsList = useSelector((state) => state.friends.friendsList);
   friendsList = friendsList.map((el, idx) => (idx < maxPeople ? (el = true) : (el = false)));
   let recruteList = useSelector((state) => state.friends.recruteList);
@@ -52,22 +73,68 @@ function PostsPage() {
           let test = JSON.parse(localStorage.getItem('recruteList'));
           dispatch(friendsSlice.actions.setRecruteList(test));
         }
+
+        // TODO: recruteList, friendsList 서버에 보내주기
+        console.log(recruteList, friendsList);
       }
     });
   };
 
   let isJoin = JSON.parse(localStorage.getItem('isJoin'));
 
+  const clearData = () => {
+    dispatch(writingSlice.actions.setImageUrl(null));
+    dispatch(writingSlice.actions.setTitle(''));
+    dispatch(writingSlice.actions.setCategory('전체'));
+    dispatch(writingSlice.actions.setTotalAmount(0));
+    dispatch(writingSlice.actions.setMaxPeople(1));
+    dispatch(writingSlice.actions.setTextarea(''));
+  };
+
   return (
     <div className="">
       <div className="w-[100%] mt-[47px]">
-        <BackButton />
+        <BackButton onClickHandler={clearData} />
       </div>
 
       <div className="flex justify-center">
         <img
           alt=""
-          src={imageUrl}
+          src={
+            imageUrl
+              ? imageUrl
+              : category === '채소'
+              ? vegetableGray
+              : category === '전체'
+              ? totalGray
+              : category === '과일'
+              ? fruitGray
+              : category === '수산물/건해산'
+              ? aquaticGray
+              : category === '쌀/잡곡/견과'
+              ? riceGray
+              : category === '정육/계란류'
+              ? meatGray
+              : category === '베이커리/잼'
+              ? breadGray
+              : category === '친환경/유기농'
+              ? ecoGray
+              : category === '김치/반찬/델리'
+              ? kimchiGray
+              : category === '생수/음류/주류'
+              ? waterGray
+              : category === '면류/통조림'
+              ? noodlesGray
+              : category === '양념/오일'
+              ? seasoningGray
+              : category === '과자/간식'
+              ? snackGray
+              : category === '커피/차/원두'
+              ? coffeeGray
+              : category === '우유/유제품'
+              ? milkGray
+              : ''
+          }
           className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />
       </div>

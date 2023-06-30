@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
-import { saveUserInfo } from '../redux/api/authApi';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import IdPasswordForm from '../components/common/IdPasswordForm';
@@ -15,6 +14,7 @@ import {
   setErrors,
   resetFields,
 } from '../redux/slices/registerSlice';
+import { checkEmail } from '../redux/api/authApi';
 
 const RegisterPage = () => {
   const inputFields = [
@@ -33,11 +33,10 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   // 회원가입 API 호출
-  const callSaveUserInfo = async () => {
+  const callSaveUserInfo = () => {
     try {
       dispatch(signupStart());
-      await saveUserInfo({ email, password, nickname });
-      dispatch(signupSuccess({ email }));
+      dispatch(signupSuccess({ email, password, nickname }));
       dispatch(resetFields());
       navigate(`/permission`);
     } catch (error) {
@@ -45,24 +44,38 @@ const RegisterPage = () => {
     }
   };
 
+  // 사용자 이메일 체크
+  const handleCheckEmail = async (value) => {
+    try {
+      const result = await checkEmail(value);
+      return result === null;
+    } catch (error) {
+      console.error('사용자 이메일 체크 오류 :', error);
+      return false;
+    }
+  };
+
   // 유효성 검사 후 상태 업데이트
   const validateField = useCallback(
-    debounce((name, value) => {
+    debounce(async (name, value) => {
       const validationErrors = { ...errors };
       console.log(name, value);
       if (name === 'email') {
         dispatch(setEmail(value));
-        validationErrors.email = {
-          message:
-            value.trim() === ''
-              ? '아이디를 입력해주세요.'
-              : emailRegex.test(value)
-              ? value === existedEmail
-                ? '이미 사용중인 아이디입니다.'
-                : ''
-              : '유효한 이메일 형식이 아닙니다.',
-          isError: value.trim() === '' || !emailRegex.test(value) || value === existedEmail,
-        };
+        const isValidEmail = emailRegex.test(value);
+
+        if (!value.trim()) {
+          validationErrors.email = { message: '아이디를 입력해주세요.', isError: true };
+        } else if (!isValidEmail) {
+          validationErrors.email = { message: '유효한 이메일 형식이 아닙니다.', isError: true };
+        } else {
+          const isAvailable = await handleCheckEmail(value);
+          if (!isAvailable) {
+            validationErrors.email = { message: '이미 사용중인 아이디입니다.', isError: true };
+          } else {
+            validationErrors.email = { message: '', isError: false };
+          }
+        }
       } else if (name === 'password') {
         dispatch(setPassword(value));
         validationErrors.password = {
@@ -81,7 +94,7 @@ const RegisterPage = () => {
             value.trim() === ''
               ? '확인을 위하여 위와 동일하게 입력해주세요.'
               : value !== password
-              ? '비밀번호가 일치하지 않습니다.'
+              ? '비밀번호가 틀렸습니다. 다시 입력해주세요.'
               : '',
           isError: value.trim() === '' || value !== password,
         };

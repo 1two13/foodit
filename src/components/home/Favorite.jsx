@@ -4,15 +4,13 @@ import FavoriteButton from '../common/FavoriteButton';
 import Title from './Title';
 
 const Favorite = () => {
-  const { category1, category2, category3, category4, category5 } = useSelector((state) => state.userFavorite);
-  const favoriteCategories = [
-    { category: category1.name, src: category1.src },
-    { category: category2.name, src: category2.src },
-    { category: category3.name, src: category3.src },
-    { category: category4.name, src: category4.src },
-    { category: category5.name, src: category5.src },
-  ];
-  console.log(favoriteCategories);
+  const { categories } = useSelector((state) => state.userFavorite);
+
+  const favoriteCategories = Object.values(categories).map((category) => ({
+    category: category.name,
+    src: category.src,
+  }));
+
   return (
     <div className="pt-[25px] pb-[30px] w-full overflow-x-hidden">
       <Title title={'즐겨찾기'} />

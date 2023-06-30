@@ -1,14 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 
 import LongButton from '../components/common/LongButton';
 import Input from '../components/writingPage/Input';
 import BackButton from '../components/common/navBar/BackButton';
-import { writingSlice } from '../redux/slices/writingSlice';
+import postApi from '../api/postApi';
 
-import { ADD_IMAGE, ARTICLE_TITLE, TOTAL_AMOUNT, MAXIMUM_PEOPLE, PLEASE_WRITE_TEXT, DONE } from '../static/constants';
+import { ADD_IMAGE, ARTICLE_TITLE, DONE, MAXIMUM_PEOPLE, PLEASE_WRITE_TEXT, TOTAL_AMOUNT } from '../static/constants';
 
 function WritingPage() {
   const options = [
@@ -35,17 +34,18 @@ function WritingPage() {
 
   const imgRef = useRef(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const title = useSelector((state) => state.writing.title);
-  const imageUrl = useSelector((state) => state.writing.imageUrl);
-  const totalAmount = useSelector((state) => state.writing.totalAmount);
-  const textarea = useSelector((state) => state.writing.textarea);
 
-  const [count, setCount] = useState(min);
-  const [selectedCategory, setSelectedCategory] = useState(options[0]);
+  const [post, setPost] = useState({
+    title: '',
+    textArea: '',
+    totalAmount: 0,
+    peopleCount: 1,
+    imageUrl: null,
+    selectedCategory: null,
+  });
 
   const addImages = () => imgRef.current?.click();
-  const removeImage = () => dispatch(writingSlice.actions.setImageUrl(null));
+  const removeImage = () => setPost({ ...post, imageUrl: null });
   const onChangeImage = (e) => {
     const files = e.target.files[0];
     const reader = new FileReader();
@@ -54,46 +54,44 @@ function WritingPage() {
 
     reader.readAsDataURL(files);
     reader.onload = () => {
-      dispatch(writingSlice.actions.setImageUrl(reader.result));
+      setPost({ ...post, imageUrl: reader.result });
     };
   };
 
   const onChangeTitle = (e) => {
-    dispatch(writingSlice.actions.setTitle(e.target.value));
+    setPost({ ...post, title: e.target.value });
   };
 
   const onChangeCategory = (e) => {
-    const selectedValue = e.value;
-    setSelectedCategory(selectedValue);
-    dispatch(writingSlice.actions.setCategory(selectedValue));
+    setPost({ ...post, selectedCategory: e.value });
   };
 
   const onChangeTotalAmount = (e) => {
     const totalAmount = e.target.value;
 
     if (!/^[0-9]*$/.test(totalAmount)) e.target.value = '';
-    else dispatch(writingSlice.actions.setTotalAmount(totalAmount));
+    else setPost({ ...post, totalAmount: Number(totalAmount) });
   };
 
   const decreaseCount = () => {
-    const newCount = Math.max(count - 1, min);
-    setCount(newCount);
-    dispatch(writingSlice.actions.setMaxPeople(newCount));
+    const newCount = Math.max(post.peopleCount - 1, min);
+    setPost({ ...post, peopleCount: newCount });
   };
+
   const increaseCount = () => {
-    const newCount = Math.min(count + 1, max);
-    setCount(newCount);
-    dispatch(writingSlice.actions.setMaxPeople(newCount));
+    const newCount = Math.min(post.peopleCount + 1, max);
+    setPost({ ...post, peopleCount: newCount });
   };
 
   const onChangeTextarea = (e) => {
-    dispatch(writingSlice.actions.setTextarea(e.target.value));
+    setPost({ ...post, textArea: e.target.value });
   };
 
-  const onclickDoneButton = () => {
-    dispatch(writingSlice.actions.wasWritingPage());
-    // TODO: 작성한 글 데이터를 서버로 보내기
-    navigate('/posts');
+  const onclickDoneButton = async () => {
+    // TODO: 작성한 글 데이터를 서버로 보내기, catch 및 로딩 넣기
+    const response = await postApi.writePost(JSON.stringify(post));
+    const postId = response.postId;
+    navigate(`/posts/${postId}`);
   };
 
   return (
@@ -107,7 +105,7 @@ function WritingPage() {
         >
           <button className="flex flex-col items-center text-[13px] text-darkGray">
             <input type="file" className="hidden" multiple accept="image/png, image/jpg, image/jpeg" ref={imgRef} />
-            {imageUrl && <img alt="" src={imageUrl} className="w-[360px] h-[238px] rounded-[15px] z-[50]" />}
+            {post.imageUrl && <img alt="" src={post.imageUrl} className="w-[360px] h-[238px] rounded-[15px] z-[50]" />}
             <div className="flex flex-col top-[177px] absolute">
               <svg
                 width="76"
@@ -129,7 +127,7 @@ function WritingPage() {
       </div>
 
       <div>
-        {imageUrl ? (
+        {post.imageUrl ? (
           <button
             onClick={removeImage}
             className="flex items-center justify-center h-[32px] w-[32px] top-[114px] ml-[331px] rounded-full bg-[black] opacity-[60%] absolute z-[999]"
@@ -149,7 +147,7 @@ function WritingPage() {
       <Input placeholder={ARTICLE_TITLE} onChange={onChangeTitle} />
 
       <div className="mx-[15px] py-[15px] text-red border-b-[0.5px] border-gray">
-        <Select defaultValue={selectedCategory} options={options} onChange={onChangeCategory} />
+        <Select defaultValue={options[0]} options={options} onChange={onChangeCategory} />
       </div>
 
       <Input placeholder={TOTAL_AMOUNT} onChange={onChangeTotalAmount} />
@@ -165,7 +163,7 @@ function WritingPage() {
               />
             </svg>
           </button>
-          <div className="flex justify-center items-center w-[63px] mx-[10px]">{count}</div>
+          <div className="flex justify-center items-center w-[63px] mx-[10px]">{post.peopleCount}</div>
           <button onClick={increaseCount}>
             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -182,7 +180,7 @@ function WritingPage() {
         className="w-[92%] h-[150px] py-[20px] mx-[15px] focus:outline-none text-[13px] text-darkGray"
       />
 
-      {title.length === 0 || totalAmount === 0 || !textarea ? (
+      {post.title.length === 0 || post.totalAmount === 0 || !post.textArea ? (
         <LongButton contents={DONE} background={'#CCCCCC'} customStyle={'disabled'} />
       ) : (
         <LongButton contents={DONE} onClick={onclickDoneButton} />

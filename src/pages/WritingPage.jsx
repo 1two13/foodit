@@ -90,7 +90,10 @@ function WritingPage() {
     dispatch(writingSlice.actions.setTextarea(e.target.value));
   };
 
-  const onclickDoneButton = () => navigate('/posts');
+  const onclickDoneButton = () => {
+    dispatch(writingSlice.actions.wasWritingPage());
+    navigate('/posts');
+  };
 
   return (
     <div className="mt-[47px]">

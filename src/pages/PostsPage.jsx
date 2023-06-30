@@ -10,6 +10,7 @@ import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT,
 
 function PostsPage() {
   const dispatch = useDispatch();
+  const wasWritingPage = useSelector((state) => state.writing.writingPage);
 
   const imageUrl = JSON.parse(localStorage.getItem('imageUrl'));
   const title = JSON.parse(localStorage.getItem('title'));
@@ -19,6 +20,10 @@ function PostsPage() {
   const textarea = JSON.parse(localStorage.getItem('textarea'));
   const divisionAmount = (totalAmount / (maxPeople + 1)).toLocaleString();
 
+  // TODO: 1. 글 작성 후 등록된 글을 확인하는 페이지로 넘어오는 경우 => 글 작성 페이지에서 선택한 인원수만큼 보여주기
+  if (wasWritingPage) {
+  }
+  // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
   let friendsList = useSelector((state) => state.friends.friendsList);
   friendsList = friendsList.map((el, idx) => (idx < maxPeople ? (el = true) : (el = false)));
   let recruteList = useSelector((state) => state.friends.recruteList);

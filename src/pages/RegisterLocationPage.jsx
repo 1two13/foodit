@@ -60,7 +60,7 @@ function RegisterLocationPage() {
     // e.target.value를 포함하고 있는 데이터만 보여주기
   };
 
-  // TODO: 처음에 전체 주소 목록 보여주기
+  // FIXME: 처음에 전체 주소 목록을 보여줄건지
   useEffect(() => {
     setSearchedData(locationList);
   }, []);
@@ -74,7 +74,7 @@ function RegisterLocationPage() {
         if (!trimmed) return;
 
         console.log(searchedData);
-        // TODO: 서버에서 inputText를 포함하는 데이터 가져오기
+        // FIXME: 서버에서 inputText를 포함하는 API를 매번 호출하는건지, 맨처음에 렌더링될 때 연동한 API를 filter해서 보여주는 건지..
         // const { locationList } = await getSearchedList({ q: inputText, page: 1 });
         // setSearchedData(locationList);
         const filteredData = locationList.filter((el) => el.includes(trimmed));

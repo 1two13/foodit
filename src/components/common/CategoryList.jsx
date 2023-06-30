@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
 import Category from './Category';
+
 import { TEMPORARY_SRC } from '../../static/constants';
+import total from '../../images/total.png';
 import aquatic from '../../images/aquatic.png';
 import bread from '../../images/bread.png';
 import eco from '../../images/eco.png';
@@ -15,13 +17,14 @@ import rice from '../../images/rice.png';
 import seasoning from '../../images/seasoning.png';
 import snack from '../../images/snack.png';
 import vegetable from '../../images/vegetable.png';
+import coffee from '../../images/coffee.png';
 
 // TODO: 하드코딩된 값 constants로 추후 변경 예정
 function CategoryList() {
   return (
     <div className="flex justify-center mx-[19px]">
       <div className="flex items-center flex-wrap gap-x-[20px] gap-y-[29px] w-[360px] mt-[25px] justify-between">
-        <Category src={TEMPORARY_SRC} firstName={'전체'} />
+        <Category src={total} firstName={'전체'} />
         <Category src={fruit} firstName={'과일'} />
         <Category src={vegetable} firstName={'채소'} />
         <Category src={rice} firstName={'쌀/잡곡'} lastName={'견과'} />
@@ -31,7 +34,7 @@ function CategoryList() {
         <Category src={milk} firstName={'우유'} lastName={'유제품'} />
         <Category src={kimchi} firstName={'김치/반찬'} lastName={'델리'} />
         <Category src={water} firstName={'생수/음료'} lastName={'주류'} />
-        <Category src={TEMPORARY_SRC} firstName={'커피/차'} lastName={'원두'} />
+        <Category src={coffee} firstName={'커피/차'} lastName={'원두'} />
 
         <Category src={noodles} firstName={'면류'} lastName={'통조림'} />
         <Category src={seasoning} firstName={'양념/오일'} />

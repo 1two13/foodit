@@ -52,6 +52,9 @@ function PostsPage() {
           let test = JSON.parse(localStorage.getItem('recruteList'));
           dispatch(friendsSlice.actions.setRecruteList(test));
         }
+
+        // TODO: recruteList, friendsList 서버에 보내주기
+        console.log(recruteList, friendsList);
       }
     });
   };

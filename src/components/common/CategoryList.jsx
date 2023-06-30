@@ -1,8 +1,5 @@
 import React from 'react';
 import Category from './Category';
-import { useDispatch } from 'react-redux';
-import { addFavoriteCategory } from '../../redux/slices/userFavoriteSlice';
-
 import total from '../../images/total.png';
 import fruit from '../../images/fruit.png';
 import vegetable from '../../images/vegetable.png';
@@ -38,23 +35,11 @@ const categories = [
 ];
 
 function CategoryList() {
-  const dispatch = useDispatch();
-
-  const handleAddFavorite = (name, src) => {
-    dispatch(addFavoriteCategory({ name, src }));
-  };
-
   return (
     <div className="flex justify-center mx-[19px]">
       <div className="flex items-center flex-wrap gap-x-[20px] gap-y-[29px] w-[360px] mt-[25px] justify-between">
         {categories.map((category, index) => (
-          <Category
-            key={index}
-            src={category.src}
-            firstName={category.firstName}
-            lastName={category.lastName}
-            onAddFavorite={() => handleAddFavorite(category.firstName, category.src)}
-          />
+          <Category key={index} src={category.src} firstName={category.firstName} lastName={category.lastName} />
         ))}
       </div>
     </div>

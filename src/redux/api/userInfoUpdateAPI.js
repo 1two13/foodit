@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 const encryptionKey = process.env.REACT_APP_SECRET_KEY;
 const BASE_URL = 'http://localhost:8080/api/v1';
 
-// 유저정보 암호화 후 로컬스토리지에 저장
+/** 유저정보 암호화 후 로컬스토리지에 저장 */
 export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
   const encryptedPassword = CryptoJS.AES.encrypt(newPassword, encryptionKey).toString();
 
@@ -30,7 +30,7 @@ export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
   }
 };
 
-// 사용자 회원정보 조회
+/** 사용자 회원정보 조회 */
 export const inquireUserInfoAPI = async ({ username }) => {
   try {
     const response = await axios.post(`${BASE_URL}/user/detail`, username);
@@ -43,13 +43,36 @@ export const inquireUserInfoAPI = async ({ username }) => {
   }
 };
 
-// 사용자 정보(비밀번호) 변경
+/** 사용자 정보(비밀번호) 변경 */
 export const updatePasswordAPI = async ({ username }) => {
   try {
     const response = await axios.post(`${BASE_URL}/user/modify`, username);
     const result = response.data;
     console.log(result);
     return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+/** 사용자 카테고리 즐겨찾기 등록 */
+export const addFavoriteAPI = async ({ username, categories }) => {
+  try {
+    const categoryIDs = Object.keys(categories).map((key) => categories[key].id);
+
+    const requests = categoryIDs.map((categoryID, index) => {
+      const categoryIndex = index + 1;
+      const url = `${BASE_URL}/user/category${categoryIndex}/modify`;
+      const data = {
+        username,
+        [`category${categoryIndex}_id`]: categoryID,
+      };
+
+      return axios.post(url, data);
+    });
+
+    const responses = await Promise.all(requests);
+    return responses;
   } catch (error) {
     throw new Error(error.message);
   }

@@ -1,12 +1,42 @@
 import React from 'react';
-
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import MyPageCategory from '../components/myPage/MyPageCategory';
 import MyProfile from '../components/common/MyProfile';
 import TabBar from '../components/common/navBar/TabBar';
 
 import { MY_PAGE, SETTING_LOCATION, CHANGE_INFO, LOGOUT } from '../static/constants';
+import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
+import { getUserInfoFailure, getUserInfoStart, getUserInfoSuccess } from '../redux/slices/myPageSlice';
 
 function MyPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const username = localStorage.getItem('username');
+
+  /** 내정보 변경 */
+  const moveToEditProfile = () => {
+    try {
+      dispatch(getUserInfoStart());
+      dispatch(getUserInfoSuccess(username));
+      navigate('/editProfile');
+    } catch (error) {
+      dispatch(getUserInfoFailure());
+    }
+  };
+
+  /** 로그아웃 시도 */
+  const handleLogout = async () => {
+    try {
+      dispatch(logoutStart());
+      dispatch(logoutSuccess());
+      navigate('/');
+    } catch (error) {
+      console.log('로그아웃 실패');
+      dispatch(logoutFailure('로그아웃에 실패했습니다.'));
+    }
+  };
+
   return (
     <div className="mt-[47px]">
       <div className="flex flex-col justify-center items-center">
@@ -41,8 +71,8 @@ function MyPage() {
 
       <div>
         <MyPageCategory name={SETTING_LOCATION} />
-        <MyPageCategory name={CHANGE_INFO} />
-        <MyPageCategory name={LOGOUT} color={'#EE0707'} />
+        <MyPageCategory name={CHANGE_INFO} onClick={moveToEditProfile} />
+        <MyPageCategory name={LOGOUT} color={'#EE0707'} onClick={handleLogout} />
       </div>
 
       <TabBar />

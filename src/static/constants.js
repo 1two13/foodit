@@ -18,7 +18,7 @@ const PERMISSION_MESSAGE =
 const CONFIRM = '확인';
 
 // RegisterLocationPage
-const SEARCH_LOCATION = '내 동네 이름(동,읍,면)으로 검색';
+const SEARCH_LOCATION = '내 동네 이름(동,면)으로 검색';
 const NEAR_LOCATION = '근처 동네';
 const DEBOUNCE_LIMIT_TIME = 500;
 

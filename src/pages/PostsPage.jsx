@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useQuery } from 'react-query';
 import Swal from 'sweetalert2';
 
 import BackButton from '../components/common/navBar/BackButton';
 import FriendsProfile from '../components/common/FriendsProfile';
-import { friendsSlice } from '../redux/slices/friendsSlice';
-import { writingSlice } from '../redux/slices/writingSlice';
+import postApi from '../api/postApi';
 
 import totalGray from '../images/totalGray.png';
 import aquaticGray from '../images/aquaticGray.png';
@@ -23,34 +22,48 @@ import seasoningGray from '../images/seasoningGray.png';
 import snackGray from '../images/snackGray.png';
 import vegetableGray from '../images/vegetableGray.png';
 import coffeeGray from '../images/coffeeGray.png';
-import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT, JOIN } from '../static/constants';
+
+import { ACTUAL_PAYMENT_AMOUNT, CANCEL, CONFIRM, DIVISION, JOIN, JOIN_ALERT, SUM, WON } from '../static/constants';
 
 function PostsPage() {
-  const dispatch = useDispatch();
+  const categoryImageMap = {
+    채소: vegetableGray,
+    전체: totalGray,
+    과일: fruitGray,
+    '수산물/건해산': aquaticGray,
+    '쌀/잡곡/견과': riceGray,
+    '정육/계란류': meatGray,
+    '베이커리/잼': breadGray,
+    '친환경/유기농': ecoGray,
+    '김치/반찬/델리': kimchiGray,
+    '생수/음류/주류': waterGray,
+    '면류/통조림': noodlesGray,
+    '양념/오일': seasoningGray,
+    '과자/간식': snackGray,
+    '커피/차/원두': coffeeGray,
+    '우유/유제품': milkGray,
+  };
+
+  const postId = useParams().postId;
   const navigate = useNavigate();
-  const wasWritingPage = useSelector((state) => state.writing.writingPage);
 
-  const imageUrl = JSON.parse(localStorage.getItem('imageUrl'));
-  const title = JSON.parse(localStorage.getItem('title'));
-  const category = JSON.parse(localStorage.getItem('category'));
-  const totalAmount = JSON.parse(localStorage.getItem('totalAmount'));
-  let maxPeople = useSelector((state) => state.writing.maxPeople);
-  const textarea = JSON.parse(localStorage.getItem('textarea'));
-  const divisionAmount = (totalAmount / (maxPeople + 1)).toLocaleString();
-
-  // TODO: 1. 글 작성 후 등록된 글을 확인하는 페이지로 넘어오는 경우 => 글 작성 페이지에서 선택한 인원수만큼 보여주기
-  if (wasWritingPage) {
-  }
   // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
-  let friendsList = useSelector((state) => state.friends.friendsList);
-  friendsList = friendsList.map((el, idx) => (idx < maxPeople ? (el = true) : (el = false)));
-  let recruteList = useSelector((state) => state.friends.recruteList);
-  recruteList = friendsList.map((el) => (el ? (el = '모집대기중') : ''));
+  const { isLoading, data: post } = useQuery('post', () => postApi.getPost(postId));
 
-  useEffect(() => {
-    dispatch(friendsSlice.actions.setFriendsList(friendsList));
-    dispatch(friendsSlice.actions.setRecruteList(recruteList));
-  }, []);
+  if (isLoading) {
+    // TODO: 로딩페이지
+    return <div>로딩중..</div>;
+  }
+
+  const maxPeople = post.peopleCount;
+  const imageUrl = post.imageUrl;
+  const title = post.title;
+  const category = post.selectedCategory;
+  const totalAmount = post.totalAmount;
+  const textarea = post.textArea;
+  const divisionAmount = (totalAmount / maxPeople).toLocaleString();
+  const friendsList = post.friendsList;
+  const isJoin = post.isJoin;
 
   const joinAsMember = () => {
     Swal.fire({
@@ -63,31 +76,13 @@ function PostsPage() {
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.setItem('isJoin', true);
-        localStorage.setItem('recruteList', JSON.stringify(recruteList));
-
-        const index = recruteList.findIndex((item) => item === '모집대기중');
-
-        if (index !== -1) {
-          recruteList[index] = '파티원';
-          localStorage.setItem('recruteList', JSON.stringify(recruteList));
-
-          let test = JSON.parse(localStorage.getItem('recruteList'));
-          dispatch(friendsSlice.actions.setRecruteList(test));
-        }
-
-        // TODO: recruteList, friendsList 서버에 보내주기
-        console.log(recruteList, friendsList);
+        postApi.joinPost(postId);
+        navigate(`/posts/${postId}`);
       }
     });
   };
 
-  let isJoin = JSON.parse(localStorage.getItem('isJoin'));
-
-  const clearData = () => {
-    navigate('/');
-    localStorage.setItem('isJoin', false);
-  };
+  const clearData = () => navigate('/');
 
   return (
     <div className="">
@@ -96,50 +91,18 @@ function PostsPage() {
       </div>
 
       <div className="flex justify-center">
+        {/* TODO: map 데이터로 보여주기 */}
         <img
           alt=""
-          src={
-            imageUrl
-              ? imageUrl
-              : category === '채소'
-              ? vegetableGray
-              : category === '전체'
-              ? totalGray
-              : category === '과일'
-              ? fruitGray
-              : category === '수산물/건해산'
-              ? aquaticGray
-              : category === '쌀/잡곡/견과'
-              ? riceGray
-              : category === '정육/계란류'
-              ? meatGray
-              : category === '베이커리/잼'
-              ? breadGray
-              : category === '친환경/유기농'
-              ? ecoGray
-              : category === '김치/반찬/델리'
-              ? kimchiGray
-              : category === '생수/음류/주류'
-              ? waterGray
-              : category === '면류/통조림'
-              ? noodlesGray
-              : category === '양념/오일'
-              ? seasoningGray
-              : category === '과자/간식'
-              ? snackGray
-              : category === '커피/차/원두'
-              ? coffeeGray
-              : category === '우유/유제품'
-              ? milkGray
-              : ''
-          }
+          // TODO: 정확한 사진이 올라가는지 추후 확인 필요
+          src={imageUrl ? imageUrl : categoryImageMap[category]}
           className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />
       </div>
 
       <div className="overflow-scroll h-[400px]">
         <div className="mx-[15px]">
-          <FriendsProfile />
+          <FriendsProfile friendsList={friendsList} maxPeople={maxPeople} />
         </div>
         <div className="mt-[15px] mx-[15px] mb-[3px] text-[16px] font-semibold">{title}</div>
         <div className="mx-[15px] text-[10px] text-smokeGray">{category}</div>
@@ -162,12 +125,12 @@ function PostsPage() {
           </div>
 
           <div className="flex justify-between px-[13px] pt-[10px] text-[13px] font-medium">
-            <div>{`내 1/${maxPeople + 1} 부담금`}</div>
+            <div>{`내 1/${maxPeople} 부담금`}</div>
             <div>{`${divisionAmount}${WON}`}</div>
           </div>
 
           <div className="flex justify-between px-[13px] pt-[10px] text-[13px] font-medium">
-            <div>{`파티원 ${maxPeople}명의 몫`}</div>
+            <div>{`파티원 ${maxPeople - 1}명의 몫`}</div>
             <div>{`${(totalAmount - totalAmount / maxPeople).toLocaleString()}${WON}`}</div>
           </div>
         </div>

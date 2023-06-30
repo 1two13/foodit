@@ -9,6 +9,9 @@ const RegisterCompletePage = () => {
 
   const handleMoveSignIn = () => {
     navigate(`/signin`);
+    localStorage.removeItem('signup-nickname');
+    localStorage.removeItem('signup-password');
+    localStorage.removeItem('registeredLocation');
   };
   const nickname = localStorage.getItem('signup-nickname');
 
@@ -18,7 +21,7 @@ const RegisterCompletePage = () => {
       <ImageAndMessage
         marginTop={'26px'}
         color={'#39B54A'}
-        src={process.env.PUBLIC_URL + '/images/walkthrough.gif'}
+        src={process.env.PUBLIC_URL + '/images/signup-success.gif'}
         mainMessage={'회원가입 완료'}
         subMessage={
           <>

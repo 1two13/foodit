@@ -3,8 +3,6 @@ import styled from 'styled-components';
 
 const Show = styled.div`
   /* 스크롤바 숨기기 */
-  overflow-x: auto;
-  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
 

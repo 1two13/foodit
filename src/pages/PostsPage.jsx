@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import BackButton from '../components/common/navBar/BackButton';
 import FriendsProfile from '../components/common/FriendsProfile';
 import { friendsSlice } from '../redux/slices/friendsSlice';
+import { writingSlice } from '../redux/slices/writingSlice';
 
 import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT, JOIN } from '../static/constants';
 
@@ -16,7 +17,7 @@ function PostsPage() {
   const title = JSON.parse(localStorage.getItem('title'));
   const category = JSON.parse(localStorage.getItem('category'));
   const totalAmount = JSON.parse(localStorage.getItem('totalAmount'));
-  const maxPeople = JSON.parse(localStorage.getItem('maxPeople'));
+  let maxPeople = useSelector((state) => state.writing.maxPeople);
   const textarea = JSON.parse(localStorage.getItem('textarea'));
   const divisionAmount = (totalAmount / (maxPeople + 1)).toLocaleString();
 
@@ -66,10 +67,19 @@ function PostsPage() {
 
   let isJoin = JSON.parse(localStorage.getItem('isJoin'));
 
+  const clearData = () => {
+    dispatch(writingSlice.actions.setImageUrl(null));
+    dispatch(writingSlice.actions.setTitle(''));
+    dispatch(writingSlice.actions.setCategory('전체'));
+    dispatch(writingSlice.actions.setTotalAmount(0));
+    dispatch(writingSlice.actions.setMaxPeople(1));
+    dispatch(writingSlice.actions.setTextarea(''));
+  };
+
   return (
     <div className="">
       <div className="w-[100%] mt-[47px]">
-        <BackButton />
+        <BackButton onClickHandler={clearData} />
       </div>
 
       <div className="flex justify-center">

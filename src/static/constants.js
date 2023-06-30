@@ -20,6 +20,7 @@ const CONFIRM = '확인';
 // RegisterLocationPage
 const SEARCH_LOCATION = '내 동네 이름(동,읍,면)으로 검색';
 const NEAR_LOCATION = '근처 동네';
+const DEBOUNCE_LIMIT_TIME = 500;
 
 // RegisterLocationCompletePage
 const MOVE_TO_HOME = '홈으로 가기';
@@ -110,4 +111,5 @@ export {
   REGISTER_LOCATION_COMPLETE,
   TIMEOUT,
   ERROR_ALERT_MESSAGE,
+  DEBOUNCE_LIMIT_TIME,
 };

@@ -1,21 +1,25 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { selectedCategorySlice } from '../../redux/slices/selectedCategorySlice';
 
 function Category({ src, firstName, lastName = '' }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onCategorySelect = (name) => {
+    const currentPath = location.pathname;
+
     dispatch(selectedCategorySlice.actions.setCategory(name));
-    navigate('/search');
+    if (currentPath === '/category') navigate('/search');
+    else navigate('/');
   };
 
   return (
     <div
-      className="flex flex-col items-center w-[1/5px] h-[90px] cursor-pointer"
+      className="border flex flex-col items-center w-[1/5px] h-[90px] cursor-pointer"
       onClick={() => onCategorySelect(lastName === '' ? firstName : `${firstName}/${lastName}`)}
     >
       <button>

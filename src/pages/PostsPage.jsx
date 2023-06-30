@@ -7,6 +7,21 @@ import FriendsProfile from '../components/common/FriendsProfile';
 import { friendsSlice } from '../redux/slices/friendsSlice';
 import { writingSlice } from '../redux/slices/writingSlice';
 
+import totalGray from '../images/totalGray.png';
+import aquaticGray from '../images/aquaticGray.png';
+import breadGray from '../images/breadGray.png';
+import ecoGray from '../images/ecoGray.png';
+import fruitGray from '../images/fruitGray.png';
+import kimchiGray from '../images/kimchiGray.png';
+import meatGray from '../images/meatGray.png';
+import milkGray from '../images/milkGray.png';
+import waterGray from '../images/waterGray.png';
+import noodlesGray from '../images/noodlesGray.png';
+import riceGray from '../images/riceGray.png';
+import seasoningGray from '../images/seasoningGray.png';
+import snackGray from '../images/snackGray.png';
+import vegetableGray from '../images/vegetableGray.png';
+import coffeeGray from '../images/coffeeGray.png';
 import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT, JOIN } from '../static/constants';
 
 function PostsPage() {
@@ -85,7 +100,41 @@ function PostsPage() {
       <div className="flex justify-center">
         <img
           alt=""
-          src={imageUrl}
+          src={
+            imageUrl
+              ? imageUrl
+              : category === '채소'
+              ? vegetableGray
+              : category === '전체'
+              ? totalGray
+              : category === '과일'
+              ? fruitGray
+              : category === '수산물/건해산'
+              ? aquaticGray
+              : category === '쌀/잡곡/견과'
+              ? riceGray
+              : category === '정육/계란류'
+              ? meatGray
+              : category === '베이커리/잼'
+              ? breadGray
+              : category === '친환경/유기농'
+              ? ecoGray
+              : category === '김치/반찬/델리'
+              ? kimchiGray
+              : category === '생수/음류/주류'
+              ? waterGray
+              : category === '면류/통조림'
+              ? noodlesGray
+              : category === '양념/오일'
+              ? seasoningGray
+              : category === '과자/간식'
+              ? snackGray
+              : category === '커피/차/원두'
+              ? coffeeGray
+              : category === '우유/유제품'
+              ? milkGray
+              : ''
+          }
           className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />
       </div>

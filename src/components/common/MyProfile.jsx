@@ -15,7 +15,7 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
   const { newNickname, errors } = useSelector((state) => state.userInfoChange);
 
   /** TODO: 서버에서 가져온 데이터로 추후 변경 */
-  const nickname = localStorage.getItem('signup-nickname');
+  const nickname = localStorage.getItem('nickname');
   const inputRef = useRef();
   const dispatch = useDispatch();
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const encryptionKey = process.env.REACT_APP_SECRET_KEY;
 const BASE_URL = 'http://localhost:8080/api/v1';
@@ -10,20 +11,20 @@ export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
 
   try {
     // TODO: 서버에 저장된 유저정보로 변경하기
-    const storedPassword = localStorage.getItem('signup-password');
-    const storedNickname = localStorage.getItem('signup-nickname');
+    const storedPassword = localStorage.getItem('password');
+    const storedNickname = localStorage.getItem('nickname');
 
     // 새로운 값을 로컬 스토리지에 비동기적으로 저장하기
     if (newPassword !== undefined) {
-      localStorage.setItem('signup-password', encryptedPassword);
+      localStorage.setItem('password', encryptedPassword);
     } else {
-      localStorage.setItem('signup-password', storedPassword);
+      localStorage.setItem('password', storedPassword);
     }
 
     if (newNickname !== undefined) {
-      localStorage.setItem('signup-nickname', newNickname);
+      localStorage.setItem('nickname', newNickname);
     } else {
-      localStorage.setItem('signup-nickname', storedNickname);
+      localStorage.setItem('nickname', storedNickname);
     }
   } catch (error) {
     throw new Error(error.message);
@@ -31,17 +32,18 @@ export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
 };
 
 /** 사용자 회원정보 조회 */
-export const inquireUserInfoAPI = async ({ username }) => {
+export const getUserInfoAPI = createAsyncThunk('signin/inquireUserInfo', async ({ username }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/user/detail`, username);
+    const response = await axios.post(`${BASE_URL}/user/detail`, { username });
     const result = response.data;
     console.log(result);
+    localStorage.removeItem('signup-username');
     localStorage.setItem('username', result.username);
     return result;
   } catch (error) {
-    throw new Error(error.message);
+    return rejectWithValue(error.message);
   }
-};
+});
 
 /** 사용자 정보(비밀번호) 변경 */
 export const updatePasswordAPI = async ({ username }) => {
@@ -55,25 +57,43 @@ export const updatePasswordAPI = async ({ username }) => {
   }
 };
 
+/** 사용자 정보(닉네임) 변경 */
+export const updateNicknameAPI = createAsyncThunk(
+  'userInfoChange/updateNickname',
+  async ({ username, nickname }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/nickname/modify`, { username, nickname });
+      const result = response.data;
+      console.log(result);
+      return result;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 /** 사용자 카테고리 즐겨찾기 등록 */
-export const addFavoriteAPI = async ({ username, categories }) => {
-  try {
-    const categoryIDs = Object.keys(categories).map((key) => categories[key].id);
+export const addFavoriteAPI = createAsyncThunk(
+  'userFavorite/addFavorite',
+  async ({ username, categories }, { rejectWithValue }) => {
+    try {
+      const categoryIDs = Object.keys(categories).map((key) => categories[key].id);
 
-    const requests = categoryIDs.map((categoryID, index) => {
-      const categoryIndex = index + 1;
-      const url = `${BASE_URL}/user/category${categoryIndex}/modify`;
-      const data = {
-        username,
-        [`category${categoryIndex}_id`]: categoryID,
-      };
+      const requests = categoryIDs.map((categoryID, index) => {
+        const categoryIndex = index + 1;
+        const url = `${BASE_URL}/user/category${categoryIndex}/modify`;
+        const data = {
+          username,
+          [`category${categoryIndex}_id`]: categoryID,
+        };
 
-      return axios.post(url, data);
-    });
+        return axios.post(url, data);
+      });
 
-    const responses = await Promise.all(requests);
-    return responses;
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
+      const responses = await Promise.all(requests);
+      return responses;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);

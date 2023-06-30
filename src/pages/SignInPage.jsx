@@ -6,13 +6,13 @@ import Input from '../components/common/Input';
 import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import { setUsername, setError, setPassword } from '../redux/slices/signinSlice';
-import { loginFailure, loginStart } from '../redux/slices/authSlice';
+import { loginFailure, loginStart, loginSuccess } from '../redux/slices/authSlice';
 import Loading from '../components/common/Loading';
+import { getUserInfoAPI } from '../redux/api/userInfoUpdateAPI';
 
 const SignInPage = () => {
   const { username, password, error } = useSelector((state) => state.signin);
   const { isLoading } = useSelector((state) => state.auth);
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,7 +36,6 @@ const SignInPage = () => {
       } else if (name === 'password') {
         dispatch(setPassword(value));
       }
-      console.log(value);
     }, 300),
     [dispatch],
   );
@@ -46,14 +45,18 @@ const SignInPage = () => {
     setIsButtonClicked(true);
 
     try {
-      if (loginSuccess) {
-        dispatch(loginStart());
-        await dispatch(loginSuccess({ username, password }));
-        navigate('/');
-        localStorage.removeItem('signup-username');
-      } else {
-        dispatch(setError('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.'));
-        setLoginSuccess(false);
+      dispatch(loginStart());
+      const response = await dispatch(loginSuccess({ username, password }));
+      
+      if (response.payload) {
+        const { loginSuccess } = response.payload;
+
+        if (loginSuccess) {
+          await getUserInfoAPI();
+          navigate('/');
+        } else {
+          dispatch(setError('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.'));
+        }
       }
     } catch (error) {
       dispatch(loginFailure());

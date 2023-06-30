@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 const encryptionKey = process.env.REACT_APP_SECRET_KEY;
 const BASE_URL = 'http://localhost:8080/api/v1';
 
-// 유저정보 암호화 후 로컬스토리지에 저장
+/** 회원가입 유저정보 암호화 후 로컬스토리지에 저장 */
 export const saveUserInfo = async ({ username, password, nickname }) => {
   const encryptedusername = CryptoJS.AES.encrypt(username, encryptionKey).toString();
   const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey).toString();
@@ -18,18 +18,18 @@ export const saveUserInfo = async ({ username, password, nickname }) => {
   }
 };
 
-// 사용자 아이디 검증
-export const checkEmail = async ({ email }) => {
+/** 사용자 아이디 검증 */
+export const checkEmail = async ({ username }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/auth/join/check`, email);
+    const response = await axios.post(`${BASE_URL}/auth/join/check`, username);
     const result = response.data;
-    return result; // 서버로부터 중복 여부 확인 결과 반환
+    return result;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-// 회원가입 API 호출
+/** 회원가입 API 호출 */
 export const signUpAPI = async ({ address }) => {
   const nickname = localStorage.getItem('signup-nickname');
   const encryptedUsername = localStorage.getItem('signup-email');
@@ -43,7 +43,7 @@ export const signUpAPI = async ({ address }) => {
     pw: decryptedPassword,
     email: decryptedUsername,
     name: nickname,
-    address: address, // 복호화 확인 필요
+    address: address,
   };
 
   try {
@@ -51,7 +51,7 @@ export const signUpAPI = async ({ address }) => {
     const result = response.data;
 
     if (result.ACCESS_TOKEN) {
-      userInfo.userId = result.ACCESS_TOKEN; // userId 값 설정
+      userInfo.userId = result.ACCESS_TOKEN;
     }
     console.log(result);
   } catch (error) {
@@ -59,7 +59,7 @@ export const signUpAPI = async ({ address }) => {
   }
 };
 
-// 로그인 API 호출
+/** 로그인 API 호출 */
 export const signInAPI = async ({ email, password }) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/login`, {
@@ -76,7 +76,7 @@ export const signInAPI = async ({ email, password }) => {
   }
 };
 
-// 로그아웃 API 호출
+/** 로그아웃 API 호출 */
 export const logoutAPI = async () => {
   try {
     await axios.get(`${BASE_URL}/logout`);

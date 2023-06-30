@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { selectedCategorySlice } from '../../redux/slices/selectedCategorySlice';
-import { addFavorite, addFavoriteCategory } from '../../redux/slices/userFavoriteSlice';
+import { addFavoriteCategory } from '../../redux/slices/userFavoriteSlice';
+import { addFavoriteAPI } from '../../redux/api/userInfoUpdateAPI';
 
 function Category({ src, firstName, lastName = '' }) {
   const name = lastName === '' ? firstName : `${firstName}\n${lastName}`;
@@ -12,12 +13,17 @@ function Category({ src, firstName, lastName = '' }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onCategorySelect = () => {
+  const onCategorySelect = async () => {
     const currentPath = location.pathname;
 
     dispatch(selectedCategorySlice.actions.setCategory(name));
     dispatch(addFavoriteCategory({ name, src }));
-    dispatch(addFavorite({ username, categories }));
+
+    try {
+      await dispatch(addFavoriteAPI({ username, categories }));
+    } catch (error) {
+      console.error(error);
+    }
 
     if (currentPath === '/category') {
       navigate('/search');

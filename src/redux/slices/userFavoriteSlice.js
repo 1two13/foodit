@@ -1,20 +1,12 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { TOTAL_SEARCHED_OUTPUT } from '../../static/constants';
 import total from '../../images/total.png';
 import { addFavoriteAPI } from '../api/userInfoUpdateAPI';
 
-export const addFavorite = createAsyncThunk('userFavorite/addFavorite', async ({ username, categories }) => {
-  try {
-    await addFavoriteAPI({ username, categories });
-  } catch (error) {
-    throw new Error(error.message);
-  }
-});
-
 const userFavoriteSlice = createSlice({
   name: 'userFavorite',
   initialState: {
-    username: '',
+    username: localStorage.getItem('username'),
     categories: {
       category1: { id: 1, name: TOTAL_SEARCHED_OUTPUT, src: total },
       category2: { id: 2, name: '', src: '' },
@@ -37,14 +29,14 @@ const userFavoriteSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addFavorite.pending, (state) => {
+      .addCase(addFavoriteAPI.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addFavorite.fulfilled, (state) => {
+      .addCase(addFavoriteAPI.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(addFavorite.rejected, (state, action) => {
+      .addCase(addFavoriteAPI.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

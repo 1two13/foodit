@@ -7,23 +7,10 @@ import TabBar from '../components/common/navBar/TabBar';
 
 import { MY_PAGE, SETTING_LOCATION, CHANGE_INFO, LOGOUT } from '../static/constants';
 import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
-import { getUserInfoFailure, getUserInfoStart, getUserInfoSuccess } from '../redux/slices/myPageSlice';
 
 function MyPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const username = localStorage.getItem('username');
-
-  /** 내정보 변경 */
-  const moveToEditProfile = () => {
-    try {
-      dispatch(getUserInfoStart());
-      dispatch(getUserInfoSuccess(username));
-      navigate('/editProfile');
-    } catch (error) {
-      dispatch(getUserInfoFailure());
-    }
-  };
 
   /** 로그아웃 시도 */
   const handleLogout = async () => {
@@ -71,7 +58,7 @@ function MyPage() {
 
       <div>
         <MyPageCategory name={SETTING_LOCATION} />
-        <MyPageCategory name={CHANGE_INFO} onClick={moveToEditProfile} />
+        <MyPageCategory name={CHANGE_INFO} onClick={() => navigate('/editProfile')} />
         <MyPageCategory name={LOGOUT} color={'#EE0707'} onClick={handleLogout} />
       </div>
 

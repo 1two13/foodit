@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getUserInfoAPI } from '../api/userInfoUpdateAPI';
 
 const initialState = {
   username: '',
@@ -19,11 +20,26 @@ const signinSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
-    resetFields: (state, action) => {
+    resetFields: (state) => {
       state.username = '';
       state.password = '';
       state.errors = '';
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUserInfoAPI.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(getUserInfoAPI.fulfilled, (state, action) => {
+        state.loading = false;
+        state.username = action.payload.username;
+      })
+      .addCase(getUserInfoAPI.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

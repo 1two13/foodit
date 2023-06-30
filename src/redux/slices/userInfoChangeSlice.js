@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { UserInfoUpdate } from '../api/userInfoUpdateAPI';
+import { updateNicknameAPI } from '../api/userInfoUpdateAPI';
 
 const userInfoChangeSlice = createSlice({
   name: 'userInfoChange',
@@ -14,6 +14,7 @@ const userInfoChangeSlice = createSlice({
       newNickname: { message: '', isError: false },
     },
     updateError: null,
+    isLoading: false,
   },
   reducers: {
     setNewPassword: (state, action) => {
@@ -31,41 +32,29 @@ const userInfoChangeSlice = createSlice({
     setErrors: (state, action) => {
       state.errors = action.payload;
     },
-    updatePasswordStart(state) {
-      state.isLoading = true;
-      state.updateError = null;
-    },
-    updatePasswordSuccess(state, action) {
-      state.isLoading = false;
-      state.currentPassword = action.payload;
-      UserInfoUpdate(state.currentPassword);
-      state.updateError = null;
-    },
-    updatePasswordFailure(state, action) {
-      state.isLoading = false;
-      state.updateError = action.payload;
-    },
-    updateNicknameStart(state) {
-      state.isLoading = true;
-      state.updateError = null;
-    },
-    updateNicknameSuccess(state, action) {
-      state.isLoading = false;
-      state.currentNickname = action.payload;
-      UserInfoUpdate(state.currentNickname);
-      state.updateError = null;
-    },
-    updateNicknameFailure(state, action) {
-      state.isLoading = false;
-      state.updateError = action.payload;
-      alert('닉네임을 입력해주세요.');
-    },
     resetFields: (state) => {
       state.userId = '';
       state.newPassword = '';
       state.newPasswordCheck = '';
       state.errors = {};
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateNicknameAPI.pending, (state) => {
+        state.isLoading = true;
+        state.updateError = null;
+      })
+      .addCase(updateNicknameAPI.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentNickname = action.payload;
+        state.updateError = null;
+      })
+      .addCase(updateNicknameAPI.rejected, (state, action) => {
+        state.isLoading = false;
+        state.updateError = action.payload;
+        alert('닉네임을 입력해주세요.');
+      });
   },
 });
 
@@ -75,12 +64,7 @@ export const {
   getCurrentNickname,
   setNewNickname,
   setErrors,
-  updatePasswordStart,
-  updatePasswordSuccess,
-  updatePasswordFailure,
-  updateNicknameStart,
-  updateNicknameSuccess,
-  updateNicknameFailure,
   resetFields,
 } = userInfoChangeSlice.actions;
+
 export default userInfoChangeSlice.reducer;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 
 import BackButton from '../components/common/navBar/BackButton';
@@ -26,6 +27,7 @@ import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT,
 
 function PostsPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const wasWritingPage = useSelector((state) => state.writing.writingPage);
 
   const imageUrl = JSON.parse(localStorage.getItem('imageUrl'));
@@ -83,12 +85,8 @@ function PostsPage() {
   let isJoin = JSON.parse(localStorage.getItem('isJoin'));
 
   const clearData = () => {
-    dispatch(writingSlice.actions.setImageUrl(null));
-    dispatch(writingSlice.actions.setTitle(''));
-    dispatch(writingSlice.actions.setCategory('전체'));
-    dispatch(writingSlice.actions.setTotalAmount(0));
-    dispatch(writingSlice.actions.setMaxPeople(1));
-    dispatch(writingSlice.actions.setTextarea(''));
+    navigate('/');
+    localStorage.setItem('isJoin', false);
   };
 
   return (

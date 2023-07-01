@@ -7,7 +7,6 @@ import TabBar from '../components/common/navBar/TabBar';
 
 import { MY_PAGE, SETTING_LOCATION, CHANGE_INFO, LOGOUT } from '../static/constants';
 import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
-import { logoutAPI } from '../redux/api/authApi';
 
 function MyPage() {
   const dispatch = useDispatch();
@@ -17,7 +16,8 @@ function MyPage() {
   const handleLogout = async () => {
     try {
       dispatch(logoutStart());
-      await logoutAPI();
+      localStorage.removeItem('signin-token');
+      localStorage.removeItem('username');
       dispatch(logoutSuccess());
       navigate('/');
     } catch (error) {

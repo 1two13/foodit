@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 
 import SearchedOutput from './SearchedOutput';
 // TODO: 임시 API로 추후 수정 예정
+import { LoadingContents } from './loading/LoadingContents';
 import { ERROR_ALERT_MESSAGE, TIMEOUT } from '../../static/constants';
 import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
@@ -154,7 +155,7 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
           ))}
         </Wrapper>
       ) : (
-        <div>로딩중</div>
+        <LoadingContents />
       )}
     </>
   );

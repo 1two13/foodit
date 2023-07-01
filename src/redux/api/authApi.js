@@ -40,8 +40,8 @@ export const signUpAPI = async ({ address }) => {
 
   const userInfo = {
     userId: '',
-    pw: decryptedPassword,
     email: decryptedUsername,
+    pw: decryptedPassword,
     name: nickname,
     address: address,
   };

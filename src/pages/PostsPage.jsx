@@ -25,6 +25,7 @@ import coffeeGray from '../images/coffeeGray.png';
 
 import { ACTUAL_PAYMENT_AMOUNT, CANCEL, CONFIRM, DIVISION, JOIN, JOIN_ALERT, SUM, WON } from '../static/constants';
 import { useSelector } from 'react-redux';
+import { LoadingContents } from '../components/common/loading/LoadingContents';
 
 function PostsPage() {
   const categoryList = [
@@ -57,8 +58,7 @@ function PostsPage() {
   });
 
   if (isLoading) {
-    // TODO: 로딩페이지
-    return <div>로딩중..</div>;
+    return <LoadingContents />;
   }
 
   const maxPeople = post.limit;

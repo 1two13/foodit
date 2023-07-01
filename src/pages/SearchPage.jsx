@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Select from 'react-select';
 
 import SearchBar from '../components/common/navBar/SearchBar';
-import SearchedOutputList from '../components/common/SearchedOutputLists';
+import SearchedOutputList from '../components/common/SearchedOutputList';
 import TabBar from '../components/common/navBar/TabBar';
 
 import { ENTER_INPUT } from '../static/constants';

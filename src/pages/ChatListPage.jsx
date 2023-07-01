@@ -144,8 +144,8 @@ const ChatListPage = () => {
                 {chatData.map((chat) => (
                   <li key={chat.id} className="w-full cursor-pointer" onClick={handleOpenChat}>
                     <div className="relative flex h-[60px]">
-                      <div className="w-[44px] h-[44px] rounded-full bg-gray mr-[12px]">
-                        <img src={chat.photo} alt="Product" className="w-full" />
+                      <div className="w-[44px] h-[44px] rounded-full bg-mainColor mr-[12px]">
+                        {/* <img src={chat.photo} alt="Product" className="w-full" /> */}
                       </div>
                       <div>
                         <div className="flex leading-[17px] ">

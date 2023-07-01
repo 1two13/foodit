@@ -6,7 +6,7 @@ function BackButton({ onClickHandler }) {
   const onClick = () => (onClickHandler ? navigate('/') : navigate(-1));
 
   return (
-    <button className="flex justify-center items-center w-[44px] h-[44px]" onClick={onClick}>
+    <button className="flex justify-center items-center w-[44px] h-[44px]" onClick={onClick} type="button">
       <svg
         onClick={onClickHandler}
         width="13"

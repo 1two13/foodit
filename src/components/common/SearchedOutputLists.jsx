@@ -8,6 +8,7 @@ import useThrottle from '../../hooks/useThrottle';
 import useCustomQuery from '../../hooks/useCustomQuery';
 
 import { ERROR_ALERT_MESSAGE, TIMEOUT, TEMPORARY_SRC } from '../../static/constants';
+import { LoadingContents } from './loading/LoadingContents';
 
 const Wrapper = styled.div`
   /* 스크롤바 숨기기 */
@@ -92,7 +93,7 @@ function SearchedOutputList({ searchedOutputList }) {
           )}
         </>
       ) : (
-        ''
+        <LoadingContents />
       )}
     </Wrapper>
   );

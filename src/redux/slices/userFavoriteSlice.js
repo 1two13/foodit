@@ -8,11 +8,11 @@ const userFavoriteSlice = createSlice({
   initialState: {
     username: localStorage.getItem('username'),
     categories: {
-      category1: { id: 1, name: TOTAL_SEARCHED_OUTPUT, src: total },
-      category2: { id: 2, name: '', src: '' },
-      category3: { id: 3, name: '', src: '' },
-      category4: { id: 4, name: '', src: '' },
-      category5: { id: 5, name: '', src: '' },
+      category1: { name: TOTAL_SEARCHED_OUTPUT, src: total },
+      category2: { name: '', src: '' },
+      category3: { name: '', src: '' },
+      category4: { name: '', src: '' },
+      category5: { name: '', src: '' },
     },
     loading: false,
     error: null,

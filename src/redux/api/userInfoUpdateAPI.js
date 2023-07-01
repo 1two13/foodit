@@ -80,13 +80,12 @@ export const addFavoriteAPI = createAsyncThunk(
   'userFavorite/addFavorite',
   async ({ username, categories }, { rejectWithValue }) => {
     try {
-      const categoryIDs = Object.keys(categories).map((key) => categories[key]);
-
-      const requests = categoryIDs.map((categoryID) => {
-        const url = `${BASE_URL}/user/${categoryID}/modify`;
+      const requests = Object.entries(categories).map(([key, category]) => {
+        const { name } = category;
+        const url = `${BASE_URL}/user/${key}/modify`;
         const data = {
           username,
-          [`${categoryID}_id`]: categoryID.name,
+          [`${key}_id`]: name,
         };
         console.log(data);
         return axios.post(url, data);

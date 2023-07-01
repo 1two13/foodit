@@ -77,7 +77,9 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
       <div className="mx-[16px] mb-[15px] text-[13px]">총 {searchedOutput?.total ?? 0}개</div>
       {!isLoading ? (
         <div
-          className={`flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] ${height ? height : 'h-[520px]'}`}
+          className={`container flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] ${
+            height ? height : 'h-[520px]'
+          }`}
           onScroll={throttleScroll}
         >
           {searchedOutput?.list.map((data, id) => (

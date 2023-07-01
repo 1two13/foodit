@@ -8,8 +8,10 @@ const FavoriteButton = ({ category, src }) => {
     if (!category) {
       navigate('/favorite-categories');
     } else {
-      console.log('리스트 출력!');
+      const tempCategory = category.split('\n').join('/');
+      navigate(`/?category=${tempCategory}`);
       /** TODO: 클릭한 카테고리 리스트 뿌려주는 로직 작성 */
+      console.log('리스트 출력!', tempCategory);
     }
   };
 

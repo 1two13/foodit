@@ -7,7 +7,7 @@ import { ERROR_ALERT_MESSAGE, TEMPORARY_SRC, TIMEOUT } from '../../static/consta
 import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
 
-function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height }) {
+function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback }) {
   const metaRef = useRef({ fetching: true, page: 1, size: 15 });
   const [searchedOutput, setSearchedOutput] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,12 +74,10 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
 
   return (
     <>
-      <div className="mx-[16px] mb-[15px] text-[13px]">총 {searchedOutput?.total ?? 0}개</div>
+      <div className="mb-[15px] text-[13px]">총 {searchedOutput?.total ?? 0}개</div>
       {!isLoading ? (
         <div
-          className={`container flex flex-col px-[15px] mb-[27px] overflow-scroll gap-[20px] ${
-            height ? height : 'h-[540px]'
-          }`}
+          className={`container flex flex-col mb-[27px] overflow-scroll gap-[20px] h-[100vh]`}
           onScroll={throttleScroll}
         >
           {searchedOutput?.list.map((data, id) => (

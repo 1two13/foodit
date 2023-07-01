@@ -2,28 +2,53 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import SearchedOutput from './SearchedOutput';
 // TODO: 임시 API로 추후 수정 예정
-import testApi from '../../api/testApi';
+import { ERROR_ALERT_MESSAGE, TEMPORARY_SRC, TIMEOUT } from '../../static/constants';
+import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
-import useCustomQuery from '../../hooks/useCustomQuery';
+import { useQuery } from 'react-query';
 
-import { ERROR_ALERT_MESSAGE, TIMEOUT, TEMPORARY_SRC } from '../../static/constants';
+function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback }) {
+  const metaRef = useRef({ fetching: true, page: 1, size: 15 });
+  const [searchedOutput, setSearchedOutput] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-function SearchedOutputList({ searchedOutputList }) {
-  // TODO: skip, limit 값은 변경될 수도
-  const skip = 15;
-  const limit = 15;
+  const { data } = useQuery(
+    'searchPost',
+    () => searchApi.searchPost(category, orderBy, keyword, metaRef.current.page, metaRef.current.size),
+    {
+      refetchOnWindowFocus: false,
+      retry: 0,
+      onSuccess: (data) => {
+        setSearchedOutput(data);
+        metaRef.current = { ...metaRef.current, total: data.total, fetching: false };
 
-  const { isLoading, data } = useCustomQuery(() => testApi({ skip, limit }));
-  const [newData, setNewData] = useState(searchedOutputList);
-  const metaRef = useRef({ fetching: false, skip: 0 });
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        setIsLoading(false);
+
+        console.warn('fail to search post.', error);
+        alert(ERROR_ALERT_MESSAGE);
+      },
+    },
+  );
 
   useEffect(() => {
-    if (!isLoading && data) setNewData(data);
-  }, [data]);
+    if (!reload || !data) return;
+
+    setIsLoading(true);
+    metaRef.current = { ...metaRef.current, total: 0, fetching: true, page: 1 };
+
+    searchApi.searchPost(category, orderBy, keyword, metaRef.current.page, metaRef.current.size).then((data) => {
+      setSearchedOutput(data);
+      setIsLoading(false);
+      metaRef.current = { ...metaRef.current, total: data.total, fetching: false };
+      reloadFinishCallback();
+    });
+  }, [reload, data]);
 
   const onScrollDropdown = (e) => {
-    if (!newData) return;
-    if (metaRef.current.skip + limit >= newData.total) return;
+    if (!searchedOutput || searchedOutput.total <= metaRef.current.page * metaRef.current.size) return;
 
     const { clientHeight, scrollHeight, scrollTop } = e.target;
     if (scrollHeight * 0.8 <= clientHeight + scrollTop) getMoreData();
@@ -33,18 +58,12 @@ function SearchedOutputList({ searchedOutputList }) {
     try {
       if (metaRef.current.fetching) return;
 
-      const skipNumber = metaRef.current.skip + limit;
-      metaRef.current = { ...metaRef.current, fetching: true, skip: skipNumber };
+      metaRef.current = { ...metaRef.current, fetching: true, page: metaRef.current.page + 1 };
 
-      const data = await testApi({ skip: skipNumber, limit: limit });
+      const data = await searchApi.searchPost(category, orderBy, keyword, metaRef.current.page, metaRef.current.size);
+
       metaRef.current = { ...metaRef.current, fetching: false };
-      // TODO: data에 담겨지는 키와 값들은 추후 API 확정되면 확인 후 코드 수정 예정
-      setNewData((beforeData) => ({
-        ...beforeData,
-        ...data,
-        posts: [...beforeData?.posts, ...data?.posts],
-        skip: skipNumber,
-      }));
+      setSearchedOutput({ ...searchedOutput, list: [...searchedOutput.list, ...data.list] });
     } catch (error) {
       console.error(ERROR_ALERT_MESSAGE);
       alert(ERROR_ALERT_MESSAGE);
@@ -54,29 +73,37 @@ function SearchedOutputList({ searchedOutputList }) {
   const throttleScroll = useThrottle(onScrollDropdown, TIMEOUT);
 
   return (
-    <div
-      className="flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] h-[520px] overflow-hidden"
-      onScroll={throttleScroll}
-    >
+    <>
+      <div className="mx-[16px] mb-[15px] text-[13px]">총 {searchedOutput?.total ?? 0}개</div>
       {!isLoading ? (
-        <>
-          {newData?.posts?.map((data, id) =>
-            searchedOutputList.map((el) => (
-              <SearchedOutput
-                key={el.id}
-                src={TEMPORARY_SRC}
-                name={el.name}
-                location={el.location}
-                price={Number(el.price).toLocaleString()}
-              />
-            )),
-          )}
-        </>
+        <div
+          className="flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] h-[435px]"
+          onScroll={throttleScroll}
+        >
+          {searchedOutput?.list.map((data, id) => (
+            <SearchedOutput
+              key={data.id}
+              src={TEMPORARY_SRC}
+              name={data.name}
+              category={data.category}
+              location={data.location}
+              price={Number(data.price).toLocaleString()}
+            />
+          ))}
+        </div>
       ) : (
-        ''
+        <div>로딩중</div>
       )}
-    </div>
+    </>
   );
 }
+
+SearchedOutputList.defaultProps = {
+  keyword: '',
+  category: '전체',
+  orderBy: '낮은 가격순',
+  reload: false,
+  reloadFinishCallback: () => {},
+};
 
 export default SearchedOutputList;

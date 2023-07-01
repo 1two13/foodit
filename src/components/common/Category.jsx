@@ -25,7 +25,7 @@ function Category({ src, firstName, lastName = '' }) {
     }
 
     if (currentPath === '/category') {
-      navigate('/search');
+      navigate(`/search?category=${name}&orderBy=낮은+가격순`);
     } else {
       navigate('/');
     }

@@ -48,7 +48,10 @@ function PostsPage() {
   const navigate = useNavigate();
 
   // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
-  const { isLoading, data: post } = useQuery('post', () => postApi.getPost(postId));
+  const { isLoading, data: post } = useQuery('post', () => postApi.getPost(postId), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
 
   if (isLoading) {
     // TODO: 로딩페이지

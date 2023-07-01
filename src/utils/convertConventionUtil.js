@@ -42,5 +42,5 @@ function snakeToCamelCase(obj) {
 
 export default {
   camelToSnakeCase,
-  snakeToCamelCase
+  snakeToCamelCase,
 };

@@ -14,7 +14,7 @@ import {
   setErrors,
   resetFields,
 } from '../redux/slices/registerSlice';
-import { checkEmail } from '../redux/api/authApi';
+import { checkEmailAPI } from '../redux/api/authApi';
 
 const RegisterPage = () => {
   const inputFields = [
@@ -46,11 +46,11 @@ const RegisterPage = () => {
   // 사용자 이메일 체크
   const handleCheckEmail = async (value) => {
     try {
-      const result = await checkEmail(value);
-      return result === null;
+      const result = await checkEmailAPI(value);
+      return result === false;
     } catch (error) {
       console.error('사용자 이메일 체크 오류 :', error);
-      return false;
+      return true;
     }
   };
 

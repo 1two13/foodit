@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
@@ -33,12 +34,16 @@ export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
 
 /** 사용자 회원정보 조회 */
 export const getUserInfoAPI = createAsyncThunk('signin/inquireUserInfo', async ({ username }, { rejectWithValue }) => {
+  const navigate = useNavigate();
   try {
     const response = await axios.post(`${BASE_URL}/user/detail`, { username });
     const result = response.data;
     console.log(result);
+
     localStorage.removeItem('signup-username');
     localStorage.setItem('username', result.username);
+
+    navigate('/');
     return result;
   } catch (error) {
     return rejectWithValue(error.message);

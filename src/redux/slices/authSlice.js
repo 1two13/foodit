@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { signInAPI } from '../api/authApi';
 import { saveUserInfo } from '../api/authApi';
+import { getUserInfoAPI } from '../api/userInfoUpdateAPI';
 
 const initialState = {
   user: {
@@ -22,10 +22,9 @@ const authSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    loginSuccess(state, action) {
+    loginSuccess(state) {
       state.isLoading = false;
-      state.user = action.payload;
-      signInAPI(state.user);
+      getUserInfoAPI();
       state.error = null;
     },
     loginFailure(state, action) {
@@ -44,11 +43,28 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    /** 회원가입 정보 로컬스토리지 저장 */
     setUserInfo(state, action) {
       state.user = action.payload;
       saveUserInfo(state.user);
       state.error = null;
     },
+  },
+  /** 로그인 한 사용자 정보 받아오기 */
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUserInfoAPI.pending, (state) => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(getUserInfoAPI.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user.username = action.payload.username;
+      })
+      .addCase(getUserInfoAPI.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 

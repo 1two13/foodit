@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
@@ -8,7 +8,7 @@ import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import { setUsername, setError, setPassword } from '../redux/slices/signinSlice';
 import { loginFailure, loginStart, loginSuccess } from '../redux/slices/authSlice';
 import Loading from '../components/common/Loading';
-import { getUserInfoAPI } from '../redux/api/userInfoUpdateAPI';
+import { signInAPI } from '../redux/api/authApi';
 
 const SignInPage = () => {
   const { username, password, error } = useSelector((state) => state.signin);
@@ -16,22 +16,13 @@ const SignInPage = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const emailRef = useRef();
-
-  /** TODO: 응답 데이터의 이메일 정보를 이메일 입력 필드에 자동으로 채워넣기 수정예정 */
-  // const storedEmail = localStorage.getItem('signup-username');
-  // useEffect(() => {
-  //   if (emailRef.current && storedEmail) {
-  //     emailRef.current.value = storedEmail;
-  //   }
-  // }, [storedEmail]);
 
   // 아이디/비밀번호 상태관리 & 디바운스 처리
   const onChangeHandler = useCallback(
     debounce((event) => {
       event.preventDefault();
       const { name, value } = event.target;
-      if (name === 'email') {
+      if (name === 'username') {
         dispatch(setUsername(value));
       } else if (name === 'password') {
         dispatch(setPassword(value));
@@ -46,20 +37,11 @@ const SignInPage = () => {
 
     try {
       dispatch(loginStart());
-      const response = await dispatch(loginSuccess({ username, password }));
-
-      if (response.payload) {
-        const { loginSuccess } = response.payload;
-
-        if (loginSuccess) {
-          await getUserInfoAPI();
-          navigate('/');
-        } else {
-          dispatch(setError('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.'));
-        }
-      }
+      await signInAPI({ username, password });
+      dispatch(loginSuccess());
     } catch (error) {
-      dispatch(loginFailure());
+      dispatch(setError('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.'));
+      dispatch(loginFailure(error.message));
     }
   };
 
@@ -77,18 +59,19 @@ const SignInPage = () => {
           type={'text'}
           placeholder={'아이디(이메일) 입력'}
           mb={'15px'}
-          useRef={emailRef}
+          name={'username'}
           onChange={onChangeHandler}
-          color={isButtonClicked && !loginSuccess ? '#ff0000' : '#d9d9d9'}
+          color={isButtonClicked && loginFailure ? '#ff0000' : '#d9d9d9'}
         />
         <Input
           type={'password'}
           placeholder={'비밀번호 입력'}
+          name={'password'}
           autoComplete={'autoComplete'}
           onChange={onChangeHandler}
-          color={isButtonClicked && !loginSuccess ? '#ff0000' : '#d9d9d9'}
+          color={isButtonClicked && loginFailure ? '#ff0000' : '#d9d9d9'}
         />
-        {!loginSuccess && isButtonClicked && (
+        {isButtonClicked && loginFailure && (
           <span className="text-[13px] relative left-[-25px] mt-[15px] text-[#ff0000]">{error}</span>
         )}
       </form>

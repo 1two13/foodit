@@ -18,8 +18,8 @@ export const saveUserInfo = async ({ username, password, nickname }) => {
   }
 };
 
-/** 사용자 아이디 검증 */
-export const checkEmail = async ({ username }) => {
+/** 회원가입 페이지 - 사용자 아이디 중복 검증 */
+export const checkEmailAPI = async ({ username }) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/join/check`, username);
     const result = response.data;
@@ -60,10 +60,10 @@ export const signUpAPI = async ({ address }) => {
 };
 
 /** 로그인 API 호출 */
-export const signInAPI = async ({ email, password }) => {
+export const signInAPI = async ({ username, password }) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/login`, {
-      email,
+      username,
       password,
     });
     const result = response.data;
@@ -71,6 +71,8 @@ export const signInAPI = async ({ email, password }) => {
     if (result.ACCESS_TOKEN) {
       localStorage.setItem('signin-token', result.ACCESS_TOKEN);
     }
+
+    return result;
   } catch (error) {
     throw new Error(error.message);
   }

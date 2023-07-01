@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import MyPageCategory from '../components/myPage/MyPageCategory';
 import MyProfile from '../components/common/MyProfile';
@@ -7,8 +7,10 @@ import TabBar from '../components/common/navBar/TabBar';
 
 import { MY_PAGE, SETTING_LOCATION, CHANGE_INFO, LOGOUT } from '../static/constants';
 import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
+import Loading from '../components/common/Loading';
 
 function MyPage() {
+  const { isLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,6 +65,7 @@ function MyPage() {
         <MyPageCategory name={LOGOUT} color={'#EE0707'} onClick={handleLogout} />
       </div>
 
+      {isLoading && <Loading />}
       <TabBar />
     </div>
   );

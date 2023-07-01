@@ -2,10 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FcCheckmark } from 'react-icons/fc';
 import { debounce } from 'lodash';
-import {
-  setErrors,
-  setNewNickname
-} from '../../redux/slices/userInfoChangeSlice';
+import { setErrors, setNewNickname } from '../../redux/slices/userInfoChangeSlice';
 import { updateNicknameAPI } from '../../redux/api/userInfoUpdateAPI';
 
 function MyProfile({ cameraSvg = '', writingSvg }) {

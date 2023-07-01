@@ -57,7 +57,7 @@ export const updatePasswordAPI = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 /** 사용자 정보(닉네임) 변경 */

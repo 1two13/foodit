@@ -21,6 +21,7 @@ import SearchPage from './pages/SearchPage';
 import MyPage from './pages/MyPage';
 import EditProfilePage from './pages/EditProfilePage';
 import FavoriteCategories from './components/home/FavoriteCategories';
+import RegisterLocationCompletePage from './pages/RegisterLocationCompletePage';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register-location" element={<RegisterLocationPage />} />
+            <Route path="/register-location-complete" element={<RegisterLocationCompletePage />} />
             <Route path="/register-complete" element={<RegisterComplete />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/permission" element={<PermissionPage />} />

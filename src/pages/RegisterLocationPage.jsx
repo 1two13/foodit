@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 
 import NearLoacation from '../components/registerLocationPage/NearLoacation';
@@ -48,11 +48,17 @@ function RegisterLocationPage() {
   console.log(searchedData);
 
   const navigate = useNavigate();
-  const onClickLocation = (location) => {
-    // TODO: 백이랑 상의 후 암호화할지 안할지 확인 필요
-    const encrypt = CryptoJS.AES.encrypt(location, REACT_APP_SECRET_KEY).toString();
+  const location = useLocation();
+  const prevPath = location.state?.prevPath;
+  
+  const onClickLocation = (address) => {
+    const encrypt = CryptoJS.AES.encrypt(address, REACT_APP_SECRET_KEY).toString();
     localStorage.setItem('registeredLocation', encrypt);
-    navigate('/register-complete');
+    if (prevPath === '/register-location') {
+      navigate('/register-complete');
+    } else {
+      navigate('/register-location-complete');
+    }
   };
 
   const onChangeHandler = (e) => {

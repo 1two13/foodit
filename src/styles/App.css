@@ -25,3 +25,7 @@ body {
   overflow: hidden;
   background: #fff;
 }
+
+.container {
+  overflow-y: hidden;
+}

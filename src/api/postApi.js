@@ -1,27 +1,31 @@
-const writePost = (body) => {
-  const dummyData = { postId: 1 };
+import convertConvention from '../utils/convertConventionUtil';
 
-  return fetch('/posts', {
+const writePost = (post, user, image) => {
+  const formData = new FormData();
+  formData.append(
+    'body',
+    new Blob([JSON.stringify(convertConvention.camelToSnakeCase(post))], { type: 'application/json' }),
+  );
+  formData.append('image', image);
+
+  return fetch('/api/vi/posts/save', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      Authorization:
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZXIxIiwiaWF0IjoxNjg4MjM4OTgwLCJleHAiOjE2ODgyNDI1ODB9.7WaULYC0e3-qZHRA1dE6-i_HtVHzTJT6tDI_srAYXhbjbZNXzy-_fK_CTVcp7vb9rJKX3mRSocBwdMQ8aNTeDA', // user.token
     },
-    body: body,
-  })
-    .then(() => dummyData)
-    .catch((err) => dummyData);
+    body: formData,
+  }).then((res) => res.json());
 };
-
-const getPosts = () => {};
 
 const postDummyData = [
   {
     title: '안녕하세요~',
-    textArea: '저희는 채소를 채고 좋아합니다.',
-    totalAmount: 20000,
-    peopleCount: 4,
+    content: '저희는 채소를 채고 좋아합니다.',
+    count: 20000,
+    limit: 4,
     imageUrl: null,
-    selectedCategory: '채소',
+    categoryId: '채소',
     isJoin: true,
     friendsList: [
       {
@@ -38,11 +42,11 @@ const postDummyData = [
   },
   {
     title: '동네 사람들!',
-    textArea: '여기 여기 모여라~',
-    totalAmount: 10000,
-    peopleCount: 3,
+    content: '여기 여기 모여라~',
+    count: 10000,
+    limit: 3,
     imageUrl: null,
-    selectedCategory: '과일',
+    categoryId: '과일',
     isJoin: false,
     friendsList: [
       {
@@ -73,9 +77,9 @@ const joinPost = (postId) => {
 };
 
 const getPost = (postId) => {
-  return fetch(`/posts/${postId}`)
-    .then(() => postDummyData[postId - 1])
-    .catch((err) => postDummyData[postId - 1]);
+  return fetch(`/api/vi/posts/detail/${postId}`)
+    .then((res) => res.json())
+    .then((json) => convertConvention.snakeToCamelCase(json));
 };
 
-export default { writePost, getPost, getPosts, joinPost };
+export default { writePost, getPost, joinPost };

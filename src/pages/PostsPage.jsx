@@ -24,28 +24,31 @@ import vegetableGray from '../images/vegetableGray.png';
 import coffeeGray from '../images/coffeeGray.png';
 
 import { ACTUAL_PAYMENT_AMOUNT, CANCEL, CONFIRM, DIVISION, JOIN, JOIN_ALERT, SUM, WON } from '../static/constants';
+import { useSelector } from 'react-redux';
 
 function PostsPage() {
-  const categoryImageMap = {
-    채소: vegetableGray,
-    전체: totalGray,
-    과일: fruitGray,
-    '수산물/건해산': aquaticGray,
-    '쌀/잡곡/견과': riceGray,
-    '정육/계란류': meatGray,
-    '베이커리/잼': breadGray,
-    '친환경/유기농': ecoGray,
-    '김치/반찬/델리': kimchiGray,
-    '생수/음류/주류': waterGray,
-    '면류/통조림': noodlesGray,
-    '양념/오일': seasoningGray,
-    '과자/간식': snackGray,
-    '커피/차/원두': coffeeGray,
-    '우유/유제품': milkGray,
-  };
+  const categoryList = [
+    { key: '전체', image: totalGray },
+    { key: '과일', image: fruitGray },
+    { key: '채소', image: vegetableGray },
+    { key: '쌀/잡곡/견과', image: riceGray },
+    { key: '정육/계란류', image: meatGray },
+    { key: '수산물/건해산', image: aquaticGray },
+    { key: '우유/유제품', image: milkGray },
+    { key: '김치/반찬/델리', image: kimchiGray },
+    { key: '생수/음료/주류', image: waterGray },
+    { key: '커피/차/원두', image: coffeeGray },
+    { key: '면류/통조림', image: noodlesGray },
+    { key: '양념/오일', image: seasoningGray },
+    { key: '과자/간식', image: snackGray },
+    { key: '베이커리/잼', image: breadGray },
+    { key: '친환경/유기농', image: ecoGray },
+  ];
 
   const postId = useParams().postId;
   const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.auth);
 
   // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
   const { isLoading, data: post } = useQuery('post', () => postApi.getPost(postId), {
@@ -58,15 +61,15 @@ function PostsPage() {
     return <div>로딩중..</div>;
   }
 
-  const maxPeople = post.peopleCount;
+  const maxPeople = post.limit;
   const imageUrl = post.imageUrl;
   const title = post.title;
-  const category = post.selectedCategory;
-  const totalAmount = post.totalAmount;
-  const textarea = post.textArea;
+  const category = categoryList[post.categoryId];
+  const totalAmount = post.count;
+  const textarea = post.content;
   const divisionAmount = (totalAmount / maxPeople).toLocaleString();
-  const friendsList = post.friendsList;
-  const isJoin = post.isJoin;
+  const friendsList = post.participants;
+  const isJoin = (!user?.id ? 1 : user?.id) === post.userId; // TODO user 정보 꺼내서 체크
 
   const joinAsMember = () => {
     Swal.fire({
@@ -98,7 +101,7 @@ function PostsPage() {
         <img
           alt=""
           // TODO: 정확한 사진이 올라가는지 추후 확인 필요
-          src={imageUrl ? imageUrl : categoryImageMap[category]}
+          src={imageUrl ? imageUrl : category.image}
           className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />
       </div>
@@ -108,7 +111,7 @@ function PostsPage() {
           <FriendsProfile friendsList={friendsList} maxPeople={maxPeople} />
         </div>
         <div className="mt-[15px] mx-[15px] mb-[3px] text-[16px] font-semibold">{title}</div>
-        <div className="mx-[15px] text-[10px] text-smokeGray">{category}</div>
+        <div className="mx-[15px] text-[10px] text-smokeGray">{category.key}</div>
         <div className="pt-[34px] mb-[26px] mx-[15px] text-[13px]">{textarea}</div>
 
         <div className="w-[360px] h-[200px] p-[14px] mx-[15px] mb-[93px] rounded-[10px] bg-hexGray">

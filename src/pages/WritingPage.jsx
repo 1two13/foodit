@@ -8,26 +8,26 @@ import BackButton from '../components/common/navBar/BackButton';
 import postApi from '../api/postApi';
 
 import { ADD_IMAGE, ARTICLE_TITLE, DONE, MAXIMUM_PEOPLE, PLEASE_WRITE_TEXT, TOTAL_AMOUNT } from '../static/constants';
+import { useSelector } from 'react-redux';
 
 function WritingPage() {
   const options = [
     // TODO: 하드코딩된 값 constants로 추후 변경 예정
-    { value: '전체', label: '전체' },
-    { value: '과일', label: '과일' },
-    { value: '채소', label: '채소' },
-    { value: '쌀/잡곡/견과', label: '쌀/잡곡/견과' },
-    { value: '정육/계란류', label: '정육/계란류' },
-    { value: '수산물/건해산', label: '수산물/건해산' },
-    { value: '우유/유제품', label: '우유/유제품' },
-    { value: '김치/반찬/델리', label: '김치/반찬/델리' },
-    { value: '생수/음료/주류', label: '생수/음료/주류' },
-    { value: '정육/계란류', label: '정육/계란류' },
-    { value: '커피/차/원두', label: '커피/차/원두' },
-    { value: '면류/통조림', label: '면류/통조림' },
-    { value: '양념/오일', label: '양념/오일' },
-    { value: '과자/간식', label: '과자/간식' },
-    { value: '베이커리/잼', label: '베이커리/잼' },
-    { value: '친환경/유기농', label: '친환경/유기농' },
+    { value: '전체', label: '전체', categoryId: 0 },
+    { value: '과일', label: '과일', categoryId: 1 },
+    { value: '채소', label: '채소', categoryId: 2 },
+    { value: '쌀/잡곡/견과', label: '쌀/잡곡/견과', categoryId: 3 },
+    { value: '정육/계란류', label: '정육/계란류', categoryId: 4 },
+    { value: '수산물/건해산', label: '수산물/건해산', categoryId: 5 },
+    { value: '우유/유제품', label: '우유/유제품', categoryId: 6 },
+    { value: '김치/반찬/델리', label: '김치/반찬/델리', categoryId: 7 },
+    { value: '생수/음료/주류', label: '생수/음료/주류', categoryId: 8 },
+    { value: '커피/차/원두', label: '커피/차/원두', categoryId: 9 },
+    { value: '면류/통조림', label: '면류/통조림', categoryId: 10 },
+    { value: '양념/오일', label: '양념/오일', categoryId: 11 },
+    { value: '과자/간식', label: '과자/간식', categoryId: 12 },
+    { value: '베이커리/잼', label: '베이커리/잼', categoryId: 13 },
+    { value: '친환경/유기농', label: '친환경/유기농', categoryId: 14 },
   ];
   const min = 1;
   const max = 4;
@@ -35,17 +35,19 @@ function WritingPage() {
   const imgRef = useRef(null);
   const navigate = useNavigate();
 
+  const { user } = useSelector((state) => state.auth);
   const [post, setPost] = useState({
     title: '',
-    textArea: '',
-    totalAmount: 0,
-    peopleCount: 1,
+    limit: 1,
+    count: 0,
+    content: '',
     imageUrl: null,
-    selectedCategory: null,
+    image: null,
+    category: options[0],
   });
 
   const addImages = () => imgRef.current?.click();
-  const removeImage = () => setPost({ ...post, imageUrl: null });
+  const removeImage = () => setPost({ ...post, imageUrl: null, image: null });
   const onChangeImage = (e) => {
     const files = e.target.files[0];
     const reader = new FileReader();
@@ -54,7 +56,7 @@ function WritingPage() {
 
     reader.readAsDataURL(files);
     reader.onload = () => {
-      setPost({ ...post, imageUrl: reader.result });
+      setPost({ ...post, imageUrl: reader.result, image: files });
     };
   };
 
@@ -63,34 +65,44 @@ function WritingPage() {
   };
 
   const onChangeCategory = (e) => {
-    setPost({ ...post, selectedCategory: e.value });
+    setPost({ ...post, category: options.find((o) => o.value === e.value) });
   };
 
   const onChangeTotalAmount = (e) => {
-    const totalAmount = e.target.value;
+    const count = e.target.value;
 
-    if (!/^[0-9]*$/.test(totalAmount)) e.target.value = '';
-    else setPost({ ...post, totalAmount: Number(totalAmount) });
+    if (!/^[0-9]*$/.test(count)) e.target.value = '';
+    else setPost({ ...post, count: Number(count) });
   };
 
   const decreaseCount = () => {
-    const newCount = Math.max(post.peopleCount - 1, min);
-    setPost({ ...post, peopleCount: newCount });
+    const newCount = Math.max(post.limit - 1, min);
+    setPost({ ...post, limit: newCount });
   };
 
   const increaseCount = () => {
-    const newCount = Math.min(post.peopleCount + 1, max);
-    setPost({ ...post, peopleCount: newCount });
+    const newCount = Math.min(post.limit + 1, max);
+    setPost({ ...post, limit: newCount });
   };
 
   const onChangeTextarea = (e) => {
-    setPost({ ...post, textArea: e.target.value });
+    setPost({ ...post, content: e.target.value });
   };
 
   const onclickDoneButton = async () => {
     // TODO: 작성한 글 데이터를 서버로 보내기, catch 및 로딩 넣기
-    const response = await postApi.writePost(JSON.stringify(post));
-    const postId = response.postId;
+    const postId = await postApi.writePost(
+      {
+        title: post.title,
+        limit: post.limit + 1,
+        count: post.count,
+        content: post.content,
+        categoryId: post.category.categoryId,
+        addressId: 1, // user.address
+      },
+      user,
+      post.image,
+    );
     navigate(`/posts/${postId}`);
   };
 
@@ -147,7 +159,7 @@ function WritingPage() {
       <Input placeholder={ARTICLE_TITLE} onChange={onChangeTitle} />
 
       <div className="mx-[15px] py-[15px] text-red border-b-[0.5px] border-gray">
-        <Select defaultValue={options[0]} options={options} onChange={onChangeCategory} />
+        <Select defaultValue={post.category} options={options} onChange={onChangeCategory} />
       </div>
 
       <Input placeholder={TOTAL_AMOUNT} onChange={onChangeTotalAmount} />
@@ -163,7 +175,7 @@ function WritingPage() {
               />
             </svg>
           </button>
-          <div className="flex justify-center items-center w-[63px] mx-[10px]">{post.peopleCount}</div>
+          <div className="flex justify-center items-center w-[63px] mx-[10px]">{post.limit}</div>
           <button onClick={increaseCount}>
             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -180,7 +192,7 @@ function WritingPage() {
         className="w-[92%] h-[150px] py-[20px] mx-[15px] focus:outline-none text-[13px] text-darkGray"
       />
 
-      {post.title.length === 0 || post.totalAmount === 0 || !post.textArea ? (
+      {post.title.length === 0 || post.count === 0 || !post.content ? (
         <LongButton contents={DONE} background={'#CCCCCC'} customStyle={'disabled'} />
       ) : (
         <LongButton contents={DONE} onClick={onclickDoneButton} />

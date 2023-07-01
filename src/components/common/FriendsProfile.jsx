@@ -16,10 +16,10 @@ function FriendsProfile({ friendsList, maxPeople }) {
         // 참여자
         friendsList.map((friend, index) => (
           <FriendProfile
-            key={index}
-            name={friend.name}
+            key={friend.id}
+            name={friend.nickname}
             svg={
-              friend.writer ? (
+              index === 0 ? (
                 <svg
                   className="absolute top-[-12px]"
                   width="21"
@@ -35,7 +35,7 @@ function FriendsProfile({ friendsList, maxPeople }) {
                 </svg>
               ) : null
             }
-            color={friend.writer ? null : colorMap[index]}
+            color={index === 0 ? null : colorMap[index]}
           />
         ))
       }

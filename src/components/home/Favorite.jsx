@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import FavoriteButton from '../common/FavoriteButton';
 import Title from './Title';
 
 const Favorite = () => {
   const { categories } = useSelector((state) => state.userFavorite);
-
   const favoriteCategories = Object.values(categories).map((category) => ({
     category: category.name,
     src: category.src,

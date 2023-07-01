@@ -26,6 +26,7 @@ body {
   background: #fff;
 }
 
-.container {
-  overflow-y: hidden;
+.container::-webkit-scrollbar {
+  width: 0;
+  background-color: transparent;
 }

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import SearchedOutput from './SearchedOutput';
 // TODO: 임시 API로 추후 수정 예정
 import { ERROR_ALERT_MESSAGE, TEMPORARY_SRC, TIMEOUT } from '../../static/constants';
 import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
-import { useQuery } from 'react-query';
 
 function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height }) {
   const metaRef = useRef({ fetching: true, page: 1, size: 15 });
@@ -77,8 +77,8 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
       <div className="mx-[16px] mb-[15px] text-[13px]">총 {searchedOutput?.total ?? 0}개</div>
       {!isLoading ? (
         <div
-          className={`container flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] ${
-            height ? height : 'h-[520px]'
+          className={`container flex flex-col px-[15px] mb-[27px] overflow-scroll gap-[20px] ${
+            height ? height : 'h-[540px]'
           }`}
           onScroll={throttleScroll}
         >

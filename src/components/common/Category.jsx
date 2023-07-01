@@ -1,7 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+
 import { selectedCategorySlice } from '../../redux/slices/selectedCategorySlice';
 import { addFavoriteCategory } from '../../redux/slices/userFavoriteSlice';
 import { addFavoriteAPI } from '../../redux/api/userInfoUpdateAPI';
@@ -15,8 +15,7 @@ function Category({ src, firstName, lastName = '' }) {
 
   const onCategorySelect = async () => {
     const currentPath = location.pathname;
-
-    dispatch(selectedCategorySlice.actions.setCategory(name));
+    dispatch(selectedCategorySlice.actions.setCategory(name.split('\n').join('/')));
     dispatch(addFavoriteCategory({ name, src }));
 
     try {

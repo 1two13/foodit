@@ -8,6 +8,7 @@ import ShowCase from '../components/common/ShowCase';
 import useDebounce from '../hooks/useDebounce';
 
 import { SEARCH_LOCATION, NEAR_LOCATION, DEBOUNCE_LIMIT_TIME } from '../static/constants';
+import { signUpAPI } from '../redux/api/authApi';
 
 function RegisterLocationPage() {
   // TODO: 추후 받아온 데이터를 사용할 예정
@@ -50,14 +51,18 @@ function RegisterLocationPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const prevPath = location.state?.prevPath;
-  
-  const onClickLocation = (address) => {
-    const encrypt = CryptoJS.AES.encrypt(address, REACT_APP_SECRET_KEY).toString();
-    localStorage.setItem('registeredLocation', encrypt);
-    if (prevPath === '/register-location') {
-      navigate('/register-complete');
-    } else {
-      navigate('/register-location-complete');
+
+  const onClickLocation = async (address) => {
+    try {
+      await signUpAPI(address);
+
+      if (prevPath === '/register-location') {
+        navigate('/register-complete');
+      } else {
+        navigate('/register-location-complete');
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

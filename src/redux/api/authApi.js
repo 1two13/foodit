@@ -81,6 +81,7 @@ export const logoutAPI = async () => {
   try {
     await axios.get(`${BASE_URL}/logout`);
     localStorage.removeItem('signin-token');
+    localStorage.removeItem('username');
   } catch (error) {
     throw new Error(error.message);
   }

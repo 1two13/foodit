@@ -7,6 +7,7 @@ import TabBar from '../components/common/navBar/TabBar';
 
 import { MY_PAGE, SETTING_LOCATION, CHANGE_INFO, LOGOUT } from '../static/constants';
 import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
+import { logoutAPI } from '../redux/api/authApi';
 
 function MyPage() {
   const dispatch = useDispatch();
@@ -16,10 +17,10 @@ function MyPage() {
   const handleLogout = async () => {
     try {
       dispatch(logoutStart());
+      await logoutAPI();
       dispatch(logoutSuccess());
       navigate('/');
     } catch (error) {
-      console.log('로그아웃 실패');
       dispatch(logoutFailure('로그아웃에 실패했습니다.'));
     }
   };

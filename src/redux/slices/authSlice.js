@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { signInAPI, logoutAPI } from '../api/authApi';
+import { signInAPI } from '../api/authApi';
 import { saveUserInfo } from '../api/authApi';
 
 const initialState = {
@@ -38,7 +38,7 @@ const authSlice = createSlice({
     },
     logoutSuccess: (state) => {
       state.isLoading = false;
-      logoutAPI();
+      state.user = null;
       state.error = null;
     },
     logoutFailure: (state, action) => {

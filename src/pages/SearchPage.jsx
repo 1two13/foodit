@@ -59,13 +59,16 @@ function SearchPage() {
         <Select defaultValue={selectedOption} options={options} onChange={onChangeSelector} />
       </div>
 
-      <SearchedOutputList
-        reload={reload}
-        reloadFinishCallback={() => setReload(false)}
-        keyword={keyword}
-        category={selectedCategory}
-        orderBy={selectedOption.value}
-      />
+      <div className="mx-[15px]">
+        <SearchedOutputList
+          reload={reload}
+          reloadFinishCallback={() => setReload(false)}
+          keyword={keyword}
+          category={selectedCategory}
+          orderBy={selectedOption.value}
+        />
+      </div>
+
       <TabBar />
     </div>
   );

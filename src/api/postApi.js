@@ -12,7 +12,7 @@ const writePost = (post, user, image) => {
     method: 'POST',
     headers: {
       Authorization:
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZXIxIiwiaWF0IjoxNjg4MjM4OTgwLCJleHAiOjE2ODgyNDI1ODB9.7WaULYC0e3-qZHRA1dE6-i_HtVHzTJT6tDI_srAYXhbjbZNXzy-_fK_CTVcp7vb9rJKX3mRSocBwdMQ8aNTeDA', // user.token
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZXIxIiwiaWF0IjoxNjg4MjQ0MDEwLCJleHAiOjE2ODg2MDQwMTB9.L2YVXvMQuJqhn99W91ZFZkbfRI5RshZS1qWAUbQ7V_Kc5c-JaufkXrTq-WkUrHcEPHbHA6IF177yxezeBjmORw', // user.token
     },
     body: formData,
   }).then((res) => res.json());

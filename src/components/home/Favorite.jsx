@@ -12,7 +12,7 @@ const Favorite = () => {
   }));
 
   return (
-    <div className="pt-[25px] pb-[30px] w-full overflow-x-hidden">
+    <div className="pt-[25px] pb-[28px] w-full overflow-x-hidden">
       <Title title={'즐겨찾기'} />
       <div className="flex justify-between">
         {favoriteCategories.map((item, index) => (

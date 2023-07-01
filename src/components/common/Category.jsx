@@ -16,18 +16,18 @@ function Category({ src, firstName, lastName = '' }) {
   const onCategorySelect = async () => {
     const currentPath = location.pathname;
     dispatch(selectedCategorySlice.actions.setCategory(name.split('\n').join('/')));
-    dispatch(addFavoriteCategory({ name, src }));
-
-    try {
-      await dispatch(addFavoriteAPI({ username, categories }));
-    } catch (error) {
-      console.error(error);
-    }
 
     if (currentPath === '/category') {
       navigate(`/search?category=${name}&orderBy=낮은+가격순`);
     } else {
       navigate('/');
+      dispatch(addFavoriteCategory({ name, src }));
+
+      try {
+        await dispatch(addFavoriteAPI({ username, categories }));
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

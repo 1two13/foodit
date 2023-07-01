@@ -1,7 +1,9 @@
+import convertConventionUtil from '../utils/convertConventionUtil';
+
 const data = {
   searchedOutput: {
     total: 30,
-    size: 15,
+    size: 20,
     page: 1,
     list: [
       {
@@ -218,26 +220,14 @@ const data = {
   },
 };
 
-const searchPost = async (category, orderBy, keyword, page, size) => {
-  const list = data.searchedOutput.list
-    .filter((output) => category === '전체' || output.category === category)
-    .filter((output) => !keyword || output.name.includes(keyword))
-    .sort((a, b) => (orderBy === '낮은 가격순' ? a.price - b.price : b.price - a.price));
-  const tempResult = {
-    ...data.searchedOutput,
-    page: page,
-    size: size,
-    total: list.length,
-    list: list.slice((page - 1) * size, page * size),
-  };
-
+const searchPost = async (categoryId, orderBy, keyword, page) => {
   return fetch(
-    `/api/vi/search?page=${page}&size=${size}&category=${category}&orderBy=${orderBy}${
+    `/api/vi/posts/list?page=${page}&category_id=${categoryId}&order_by=${orderBy}${
       keyword === '' ? '' : `&keyword=${keyword}`
     }`,
   )
-    .then((res) => tempResult)
-    .catch((err) => tempResult);
+    .then((res) => res.json())
+    .then((json) => convertConventionUtil.snakeToCamelCase(json));
 };
 
 export default { searchPost };

@@ -11,8 +11,8 @@ import { useSearchParams } from 'react-router-dom';
 // TODO: 하드코딩되어 있는 값들 모두 수정 필요
 function SearchPage() {
   const options = [
-    { value: '낮은 가격순', label: '낮은 가격순' },
-    { value: '높은 가격순', label: '높은 가격순' },
+    { value: '낮은 가격순', label: '낮은 가격순', orderBy: 'countAsc' },
+    { value: '높은 가격순', label: '높은 가격순', orderBy: 'countDesc' },
   ];
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +20,7 @@ function SearchPage() {
   const selectedCategory = searchParams.get('category') ?? '전체';
   const [keyword, setKeyword] = useState(searchParams.get('keyword') ?? '');
   const [selectedOption, setSelectedOption] = useState(
-    options.find((option) => option.value === searchParams.get('orderBy')?.replace('+', ' ')) ?? options[0],
+    options.find((option) => option.value === searchParams.get('orderBy')) ?? options[0],
   );
 
   const [reload, setReload] = useState(false);
@@ -28,7 +28,7 @@ function SearchPage() {
   const onChangeKeyword = (event) => setKeyword(event.target.value);
   const onSubmitKeyword = async (event) => {
     event.preventDefault();
-    setSearchParams({ category: selectedCategory, orderBy: selectedOption.value, keyword });
+    setSearchParams({ category: selectedCategory, orderBy: selectedOption.orderBy, keyword });
 
     // fetch data
     setReload(true);
@@ -36,7 +36,7 @@ function SearchPage() {
 
   const onChangeSelector = async (selectedOption) => {
     setSelectedOption(options.find((option) => option.value === selectedOption.value));
-    setSearchParams({ category: selectedCategory, orderBy: selectedOption.value, keyword });
+    setSearchParams({ category: selectedCategory, orderBy: selectedOption.orderBy, keyword });
 
     // fetch data
     setReload(true);
@@ -65,7 +65,7 @@ function SearchPage() {
           reloadFinishCallback={() => setReload(false)}
           keyword={keyword}
           category={selectedCategory}
-          orderBy={selectedOption.value}
+          orderBy={selectedOption.orderBy}
         />
       </div>
 

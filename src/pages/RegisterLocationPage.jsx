@@ -109,7 +109,7 @@ function RegisterLocationPage() {
         className="flex flex-col items-center gap-[13px]"
         contents={
           searchedData &&
-          searchedData.map((el, id) => <NearLoacation key={id} location={el} onClick={() => onClickLocation(el)} />)
+          searchedData.map((el, id) => <NearLoacation key={id} location={el} onClick={() => onClickLocation(el)} isLoading={isLoading} />)
         }
       />
     </div>

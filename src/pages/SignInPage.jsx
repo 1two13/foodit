@@ -7,7 +7,7 @@ import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import { setUsername, setError, setPassword } from '../redux/slices/signinSlice';
 import { loginFailure, loginStart, loginSuccess } from '../redux/slices/authSlice';
-import Loading from '../components/common/Loading';
+import Loading from '../components/common/loading/Loading';
 import { signInAPI } from '../redux/api/authApi';
 
 const SignInPage = () => {

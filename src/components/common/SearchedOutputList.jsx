@@ -6,6 +6,7 @@ import SearchedOutput from './SearchedOutput';
 import { ERROR_ALERT_MESSAGE, TEMPORARY_SRC, TIMEOUT } from '../../static/constants';
 import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
+import { LoadingContents } from './loading/LoadingContents';
 
 function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback }) {
   const metaRef = useRef({ fetching: true, page: 1, size: 15 });
@@ -92,7 +93,7 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
           ))}
         </div>
       ) : (
-        <div>로딩중</div>
+        <LoadingContents />
       )}
     </>
   );

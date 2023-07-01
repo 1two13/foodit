@@ -45,33 +45,15 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    signupStart(state) {
-      state.isLoading = true;
-      state.error = null;
-    },
-    signupSuccess(state, action) {
-      state.isLoading = false;
+    setUserInfo(state, action) {
       state.user = action.payload;
       saveUserInfo(state.user);
       state.error = null;
     },
-    signupFailure(state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
   },
 });
 
-export const {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-  logoutStart,
-  logoutSuccess,
-  logoutFailure,
-  signupStart,
-  signupSuccess,
-  signupFailure,
-} = authSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logoutStart, logoutSuccess, logoutFailure, setUserInfo } =
+  authSlice.actions;
 
 export default authSlice.reducer;

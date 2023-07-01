@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import IdPasswordForm from '../components/common/IdPasswordForm';
-import { signupFailure, signupStart, signupSuccess } from '../redux/slices/authSlice';
+import { setUserInfo } from '../redux/slices/authSlice';
 import {
   setEmail,
   setPassword,
@@ -35,12 +35,11 @@ const RegisterPage = () => {
   // 회원가입 API 호출
   const callSaveUserInfo = () => {
     try {
-      dispatch(signupStart());
-      dispatch(signupSuccess({ email, password, nickname }));
+      dispatch(setUserInfo({ email, password, nickname }));
       dispatch(resetFields());
       navigate(`/permission`);
     } catch (error) {
-      dispatch(signupFailure(error.message));
+      console.error('회원가입 정보 전송 오류 :', error);
     }
   };
 

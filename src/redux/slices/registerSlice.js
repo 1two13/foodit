@@ -33,7 +33,7 @@ const registerSlice = createSlice({
     setErrors: (state, action) => {
       state.errors = action.payload;
     },
-    resetFields: (state, action) => {
+    resetFields: (state) => {
       state.nickname = '';
       state.email = '';
       state.password = '';

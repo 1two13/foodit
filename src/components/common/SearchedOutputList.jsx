@@ -7,12 +7,12 @@ import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
 import { useQuery } from 'react-query';
 
-function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback }) {
+function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height }) {
   const metaRef = useRef({ fetching: true, page: 1, size: 15 });
   const [searchedOutput, setSearchedOutput] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { data } = useQuery(
+  useQuery(
     'searchPost',
     () => searchApi.searchPost(category, orderBy, keyword, metaRef.current.page, metaRef.current.size),
     {
@@ -34,7 +34,7 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
   );
 
   useEffect(() => {
-    if (!reload || !data) return;
+    if (!reload) return;
 
     setIsLoading(true);
     metaRef.current = { ...metaRef.current, total: 0, fetching: true, page: 1 };
@@ -45,7 +45,7 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
       metaRef.current = { ...metaRef.current, total: data.total, fetching: false };
       reloadFinishCallback();
     });
-  }, [reload, data]);
+  }, [reload]);
 
   const onScrollDropdown = (e) => {
     if (!searchedOutput || searchedOutput.total <= metaRef.current.page * metaRef.current.size) return;
@@ -77,7 +77,7 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
       <div className="mx-[16px] mb-[15px] text-[13px]">총 {searchedOutput?.total ?? 0}개</div>
       {!isLoading ? (
         <div
-          className="flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] h-[435px]"
+          className={`flex flex-col mx-[15px] mb-[27px] overflow-scroll gap-[20px] ${height ? height : 'h-[520px]'}`}
           onScroll={throttleScroll}
         >
           {searchedOutput?.list.map((data, id) => (

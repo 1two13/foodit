@@ -42,7 +42,7 @@ const Wrapper = styled.div`
   }
 `;
 
-function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback }) {
+function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height }) {
   const categoryList = [
     { key: '전체', image: totalGray },
     { key: '과일', image: fruitGray },
@@ -139,7 +139,9 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
       <div className="mb-[15px] text-[13px]">총 {searchedOutput?.totalElements ?? 0}개</div>
       {!isLoading ? (
         <Wrapper
-          className="flex flex-col mx-[15px] mb-[27px] gap-[20px] h-[555px] overflow-scroll overflow-x-hidden"
+          className={`container flex flex-col px-[15px] mb-[27px] overflow-scroll gap-[20px] ${
+            height ? height : 'h-[540px]'
+          }`}
           onScroll={throttleScroll}
         >
           {searchedOutput?.content.map((data) => (

@@ -18,7 +18,7 @@ function Category({ src, firstName, lastName = '' }) {
     dispatch(selectedCategorySlice.actions.setCategory(name.split('\n').join('/')));
 
     if (currentPath === '/category') {
-      navigate(`/search?category=${name}&orderBy=낮은+가격순`);
+      navigate(`/search?category=${name.split('\n').join('/')}&orderBy=낮은+가격순`);
     } else {
       navigate('/');
       dispatch(addFavoriteCategory({ name, src }));

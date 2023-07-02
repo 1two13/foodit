@@ -31,14 +31,14 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className="page-wrapper">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register-location" element={<RegisterLocationPage />} />
             <Route path="/register-location-complete" element={<RegisterLocationCompletePage />} />
             <Route path="/register-complete" element={<RegisterComplete />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/permission" element={<PermissionPage />} />
-            <Route path="/splashscreen" element={<SplashScreen />} />
+            <Route path="/" element={<SplashScreen />} />
             <Route path="/walkthrough" element={<Walkthrough />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/chatlist" element={<ChatList />} />

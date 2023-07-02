@@ -78,7 +78,7 @@ const SignInPage = () => {
       <LongButton type={'submit'} contents={'로그인'} bottom={'405px'} onClick={handleSignIn} />
 
       <div className="w-full h-[44px] px-[15px] fixed top-[444px] left-1/2 translate-x-[-50%] flex flex-nowrap justify-between text-[13px] text-gray text-center leading-[44px]">
-        <p className="cursor-pointer" onClick={() => handleMovePage('/')}>
+        <p className="cursor-pointer" onClick={() => handleMovePage('/home')}>
           게스트 로그인
         </p>
         <p className="cursor-pointer" onClick={() => handleMovePage('/register')}>

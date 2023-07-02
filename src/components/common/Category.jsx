@@ -20,7 +20,7 @@ function Category({ src, firstName, lastName = '' }) {
     if (currentPath === '/category') {
       navigate(`/search?category=${name.split('\n').join('/')}&orderBy=낮은+가격순`);
     } else {
-      navigate('/');
+      navigate('/home');
       dispatch(addFavoriteCategory({ name, src }));
 
       try {

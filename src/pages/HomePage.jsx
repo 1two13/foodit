@@ -23,7 +23,12 @@ const HomePage = () => {
         contents={
           <div>
             <Favorite />
-            <SearchedOutputList category={categoryParams} reload={category !== categoryParams} height={'h-[425px]'} />
+            <SearchedOutputList
+              category={categoryParams}
+              reload={category !== categoryParams}
+              height={'h-[450px]'}
+              paddingBottom={'pb-[27px]'}
+            />
           </div>
         }
       />

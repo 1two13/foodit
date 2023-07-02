@@ -11,7 +11,7 @@ const TabBar = () => {
   const dispatch = useDispatch();
 
   const changeTab = (tabId) => {
-    let path = '/home';
+    let path = '/';
 
     if (tabId === 'TabCategories') path = '/category';
     else if (tabId === 'TabAddPost') {

@@ -44,7 +44,7 @@ function App() {
   };
 
   useEffect(() => {
-    navigate('/splashscreen');
+    navigate('/splash-screen');
 
     (async () => {
       dispatch(loginStart());

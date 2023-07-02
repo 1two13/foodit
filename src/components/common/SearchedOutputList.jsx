@@ -42,7 +42,7 @@ const Wrapper = styled.div`
   }
 `;
 
-function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height }) {
+function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height, paddingBottom }) {
   const categoryList = [
     { key: '전체', image: totalGray },
     { key: '과일', image: fruitGray },
@@ -139,7 +139,7 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
         <Wrapper
           className={`container flex flex-col px-[15px] mb-[27px] overflow-scroll gap-[20px] ${
             height ? height : 'h-[540px]'
-          }`}
+          } ${paddingBottom ? paddingBottom : ''}`}
           onScroll={throttleScroll}
         >
           {searchedOutput?.content.map((data) => (

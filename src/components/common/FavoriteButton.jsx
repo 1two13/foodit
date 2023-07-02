@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const FavoriteButton = ({ category, src }) => {
+const FavoriteButton = ({ category, src, isSelected, selectCallback }) => {
   const navigate = useNavigate();
 
   const onMoveToCategories = () => {
@@ -12,6 +12,7 @@ const FavoriteButton = ({ category, src }) => {
       navigate(`/?category=${tempCategory}`);
       /** TODO: 클릭한 카테고리 리스트 뿌려주는 로직 작성 */
       console.log('리스트 출력!', tempCategory);
+      selectCallback(category);
     }
   };
 
@@ -31,7 +32,10 @@ const FavoriteButton = ({ category, src }) => {
           <img src={src} alt="즐겨찾는 카테고리" className="w-[48px] h-[48px] mb-[4px]" />
         )}
       </button>
-      <div className="text-center text-[13px]" style={{ color: category ? '#000' : '#D9D9D9', whiteSpace: 'pre-wrap' }}>
+      <div
+        className={`${isSelected ? 'font-bold' : ''} text-center text-[13px]`}
+        style={{ color: category ? '#000' : '#D9D9D9', whiteSpace: 'pre-wrap' }}
+      >
         {category ? category : '추가'}
       </div>
     </div>

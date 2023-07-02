@@ -1,11 +1,11 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import MyPageCategory from '../components/myPage/MyPageCategory';
 import MyProfile from '../components/common/MyProfile';
 import TabBar from '../components/common/navBar/TabBar';
 
-import { MY_PAGE, SETTING_LOCATION, CHANGE_INFO, LOGOUT } from '../static/constants';
+import { CHANGE_INFO, LOGOUT, MY_PAGE, SETTING_LOCATION } from '../static/constants';
 import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
 import Loading from '../components/common/loading/Loading';
 
@@ -18,8 +18,8 @@ function MyPage() {
   const handleLogout = async () => {
     try {
       dispatch(logoutStart());
-      localStorage.removeItem('signin-token');
-      localStorage.removeItem('username');
+      localStorage.clear();
+      localStorage.setItem('walkthrough', 'true');
       dispatch(logoutSuccess());
       navigate('/signin');
     } catch (error) {

@@ -6,7 +6,11 @@ const SplashScreenPage = () => {
 
   useEffect(() => {
     const moveToWalkthrough = setTimeout(() => {
-      navigate('/walkthrough');
+      if (window.localStorage.getItem('walkthrough')) {
+        navigate('/signin', { state: { before: '/' } });
+      } else {
+        navigate('/walkthrough');
+      }
     }, 1500);
     return () => clearTimeout(moveToWalkthrough);
   }, [navigate]);

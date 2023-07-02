@@ -3,11 +3,13 @@ import { TOTAL_SEARCHED_OUTPUT } from '../../static/constants';
 import total from '../../images/total.png';
 import { addFavoriteAPI } from '../api/userInfoUpdateAPI';
 
+console.log(total);
+
 const userFavoriteSlice = createSlice({
   name: 'userFavorite',
   initialState: {
     username: localStorage.getItem('username'),
-    categories: {
+    categories: JSON.parse(localStorage.getItem('favorites')) ?? {
       category1: { name: TOTAL_SEARCHED_OUTPUT, src: total },
       category2: { name: '', src: '' },
       category3: { name: '', src: '' },
@@ -24,6 +26,7 @@ const userFavoriteSlice = createSlice({
 
       if (emptyCategory) {
         state.categories[emptyCategory] = { name, src };
+        localStorage.setItem('favorites', JSON.stringify(state.categories));
       }
     },
   },

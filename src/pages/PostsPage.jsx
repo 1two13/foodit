@@ -52,7 +52,11 @@ function PostsPage() {
   const { user } = useSelector((state) => state.auth);
 
   // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
-  const { isLoading, data: post } = useQuery('post', () => postApi.getPost(postId), {
+  const {
+    isLoading,
+    data: post,
+    refetch,
+  } = useQuery('post', () => postApi.getPost(postId), {
     refetchOnWindowFocus: false,
     retry: 0,
   });
@@ -69,7 +73,7 @@ function PostsPage() {
   const textarea = post.content;
   const divisionAmount = (totalAmount / maxPeople).toLocaleString();
   const friendsList = post.participants;
-  const isJoin = (!user?.id ? 1 : user?.id) === post.userId; // TODO user 정보 꺼내서 체크
+  const isJoin = !!friendsList.find((friend) => friend.id === user?.id);
 
   const joinAsMember = () => {
     Swal.fire({
@@ -80,10 +84,15 @@ function PostsPage() {
       confirmButtonText: CONFIRM,
       cancelButtonText: CANCEL,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        postApi.joinPost(postId);
-        navigate(`/posts/${postId}`);
+    }).then(async (result) => {
+      if (!user?.id) {
+        navigate('/signin');
+        return;
+      }
+
+      if (result.isConfirmed && !isJoin) {
+        await postApi.joinPost(postId, user.token);
+        refetch();
       }
     });
   };

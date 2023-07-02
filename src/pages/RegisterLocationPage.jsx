@@ -1,64 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import CryptoJS from 'crypto-js';
 
 import NearLoacation from '../components/registerLocationPage/NearLoacation';
 import SearchBar from '../components/common/navBar/SearchBar';
 import ShowCase from '../components/common/ShowCase';
 import useDebounce from '../hooks/useDebounce';
 
-import { SEARCH_LOCATION, NEAR_LOCATION, DEBOUNCE_LIMIT_TIME } from '../static/constants';
+import { DEBOUNCE_LIMIT_TIME, NEAR_LOCATION, SEARCH_LOCATION } from '../static/constants';
 import { signUpAPI } from '../redux/api/authApi';
+import { useQuery } from 'react-query';
+import convertConventionUtil from '../utils/convertConventionUtil';
 
 function RegisterLocationPage() {
-  // TODO: 추후 받아온 데이터를 사용할 예정
-  const locationList = [
-    '서울특별시 서초구 1',
-    '서울특별시 서초구 2',
-    '서울특별시 서초구 3',
-    '서울특별시 서초구 4',
-    '서울특별시 서초구 5',
-    '인천광역시',
-    '서울특별시 역삼동 1',
-    '서울특별시 역삼동 2',
-    '서울특별시 역삼동 3',
-    '인천광역시 연수구 송도동',
-    '인천광역시 연수구 송도동 1',
-    '광주광역시 서초구 역삼동',
-    '부산광역시 서초구 역삼동',
-    '서울특별시 서초구 1',
-    '서울특별시 서초구 2',
-    '서울특별시 서초구 3',
-    '서울특별시 서초구 4',
-    '서울특별시 서초구 5',
-    '인천광역시',
-    '서울특별시 역삼동 1',
-    '서울특별시 역삼동 2',
-    '서울특별시 역삼동 3',
-    '인천광역시 연수구 송도동',
-    '인천광역시 연수구 송도동 1',
-    '광주광역시 서초구 역삼동',
-    '부산광역시 서초구 역삼동',
-  ];
-  const REACT_APP_SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
-
   const [isLoading, setIsLoading] = useState(false);
   const [inputText, setInputText] = useState('');
   const [searchedData, setSearchedData] = useState([]);
   const debounceValue = useDebounce(inputText, DEBOUNCE_LIMIT_TIME);
-  console.log(searchedData);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const prevPath = location.state?.prevPath;
+  const prevPath = location.state?.before;
+
+  const { data: locationList } = useQuery(
+    'location',
+    () =>
+      fetch('/api/vi/address/list')
+        .then((res) => res.json())
+        .then((json) => convertConventionUtil.snakeToCamelCase(json)),
+    {
+      onSuccess: (data) => setSearchedData(data),
+    },
+  );
 
   const onClickLocation = async (address) => {
+    console.log('hi', address);
     try {
-      await signUpAPI(address);
-
-      if (prevPath === '/register-location') {
+      if (prevPath === '/permission') {
+        await signUpAPI(address.id);
         navigate('/register-complete');
       } else {
+        // TODO modify location
         navigate('/register-location-complete');
       }
     } catch (error) {
@@ -68,13 +49,8 @@ function RegisterLocationPage() {
 
   const onChangeHandler = (e) => {
     setInputText(e.target.value);
-    // e.target.value를 포함하고 있는 데이터만 보여주기
+    // TODO: e.target.value를 포함하고 있는 데이터만 보여주기
   };
-
-  // FIXME: 처음에 전체 주소 목록을 보여줄건지
-  useEffect(() => {
-    setSearchedData(locationList);
-  }, []);
 
   useEffect(() => {
     const api = async () => {
@@ -88,7 +64,7 @@ function RegisterLocationPage() {
         // FIXME: 서버에서 inputText를 포함하는 API를 매번 호출하는건지, 맨처음에 렌더링될 때 연동한 API를 filter해서 보여주는 건지..
         // const { locationList } = await getSearchedList({ q: inputText, page: 1 });
         // setSearchedData(locationList);
-        const filteredData = locationList.filter((el) => el.includes(trimmed));
+        const filteredData = locationList?.filter((el) => el.address.includes(trimmed)) ?? [];
         setSearchedData(filteredData);
       } catch (error) {
         console.error(error);
@@ -110,7 +86,7 @@ function RegisterLocationPage() {
         contents={
           searchedData &&
           searchedData.map((el, id) => (
-            <NearLoacation key={id} location={el} onClick={() => onClickLocation(el)} isLoading={isLoading} />
+            <NearLoacation key={id} location={el.address} onClick={() => onClickLocation(el)} isLoading={isLoading} />
           ))
         }
       />

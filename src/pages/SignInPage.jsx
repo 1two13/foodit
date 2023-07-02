@@ -1,21 +1,26 @@
-import React, { useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 import Input from '../components/common/Input';
 import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
-import { setUsername, setError, setPassword } from '../redux/slices/signinSlice';
+import { setError, setPassword, setUsername } from '../redux/slices/signinSlice';
 import { loginFailure, loginStart, loginSuccess } from '../redux/slices/authSlice';
 import Loading from '../components/common/loading/Loading';
 import { signInAPI } from '../redux/api/authApi';
 
 const SignInPage = () => {
+  const { user } = useSelector((state) => state.auth);
   const { username, password, error } = useSelector((state) => state.signin);
   const { isLoading } = useSelector((state) => state.auth);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.id) navigate('/');
+  }, [user]);
 
   // 아이디/비밀번호 상태관리 & 디바운스 처리
   const onChangeHandler = useCallback(
@@ -37,8 +42,10 @@ const SignInPage = () => {
 
     try {
       dispatch(loginStart());
-      await signInAPI({ username, password });
-      dispatch(loginSuccess());
+      const user = await signInAPI({ username, password });
+      dispatch(loginSuccess(user));
+
+      navigate('/');
     } catch (error) {
       dispatch(setError('일치하는 회원정보가 없거나, 비밀번호가 일치하지 않습니다.'));
       dispatch(loginFailure(error.message));

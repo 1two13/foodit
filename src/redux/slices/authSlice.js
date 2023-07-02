@@ -4,6 +4,7 @@ import { getUserInfoAPI } from '../api/userInfoUpdateAPI';
 
 const initialState = {
   user: {
+    token: localStorage.getItem('token') ?? '',
     id: '',
     username: '',
     password: '',
@@ -22,12 +23,13 @@ const authSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    loginSuccess(state) {
+    loginSuccess(state, action) {
       state.isLoading = false;
-      getUserInfoAPI();
+      state.user = { ...state.user, ...action.payload };
       state.error = null;
     },
     loginFailure(state, action) {
+      state.user = { ...state.user, token: '' };
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -36,6 +38,7 @@ const authSlice = createSlice({
       state.error = null;
     },
     logoutSuccess: (state) => {
+      state.user = { ...initialState.user, token: '' };
       state.isLoading = false;
       state.error = null;
     },
@@ -45,8 +48,8 @@ const authSlice = createSlice({
     },
     /** 회원가입 정보 로컬스토리지 저장 */
     setUserInfo(state, action) {
-      state.user = action.payload;
-      saveUserInfo(state.user);
+      console.log(action);
+      saveUserInfo(action.payload);
       state.error = null;
     },
   },

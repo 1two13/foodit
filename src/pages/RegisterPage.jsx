@@ -1,18 +1,18 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import IdPasswordForm from '../components/common/IdPasswordForm';
 import { setUserInfo } from '../redux/slices/authSlice';
 import {
+  resetFields,
   setEmail,
+  setErrors,
+  setNickname,
   setPassword,
   setPasswordCheck,
-  setNickname,
-  setErrors,
-  resetFields,
 } from '../redux/slices/registerSlice';
 import { checkEmailAPI } from '../redux/api/authApi';
 
@@ -35,7 +35,7 @@ const RegisterPage = () => {
   // 회원가입 API 호출
   const callSaveUserInfo = () => {
     try {
-      dispatch(setUserInfo({ email, password, nickname }));
+      dispatch(setUserInfo({ username: email, password, nickname }));
       dispatch(resetFields());
       navigate(`/permission`);
     } catch (error) {
@@ -46,7 +46,7 @@ const RegisterPage = () => {
   // 사용자 이메일 체크
   const handleCheckEmail = async (value) => {
     try {
-      const result = await checkEmailAPI(value);
+      const result = await checkEmailAPI({ username: value });
       return result === false;
     } catch (error) {
       console.error('사용자 이메일 체크 오류 :', error);
@@ -58,7 +58,7 @@ const RegisterPage = () => {
   const validateField = useCallback(
     debounce(async (name, value) => {
       const validationErrors = { ...errors };
-      console.log(name, value);
+
       if (name === 'email') {
         dispatch(setEmail(value));
         const isValidEmail = emailRegex.test(value);

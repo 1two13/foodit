@@ -1,10 +1,9 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const encryptionKey = process.env.REACT_APP_SECRET_KEY;
-const BASE_URL = 'http://localhost:8080/api/v1';
+const BASE_URL = '/api/vi';
 
 /** 유저정보 암호화 후 로컬스토리지에 저장 */
 export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
@@ -33,18 +32,10 @@ export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
 };
 
 /** 사용자 회원정보 조회 */
-export const getUserInfoAPI = createAsyncThunk('signin/inquireUserInfo', async ({ username }, { rejectWithValue }) => {
-  const navigate = useNavigate();
+export const getUserInfoAPI = createAsyncThunk('signin/inquireUserInfo', async ({ token }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/user/detail`, { username });
-    const result = response.data;
-    console.log(result);
-
-    localStorage.removeItem('signup-username');
-    localStorage.setItem('username', result.username);
-
-    navigate('/');
-    return result;
+    const response = await axios.post(`${BASE_URL}/user/detail`, {}, { headers: { Authorization: token } });
+    return response.data;
   } catch (error) {
     return rejectWithValue(error.message);
   }
@@ -56,9 +47,7 @@ export const updatePasswordAPI = createAsyncThunk(
   async ({ username }, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${BASE_URL}/user/modify`, { username });
-      const result = response.data;
-      console.log(result);
-      return result;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -68,12 +57,14 @@ export const updatePasswordAPI = createAsyncThunk(
 /** 사용자 정보(닉네임) 변경 */
 export const updateNicknameAPI = createAsyncThunk(
   'userInfoChange/updateNickname',
-  async ({ username, nickname }, { rejectWithValue }) => {
+  async ({ token, nickname }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/nickname/modify`, { username, nickname });
-      const result = response.data;
-      console.log(result);
-      return result;
+      const response = await axios.post(
+        `${BASE_URL}/user/nickname/modify`,
+        { nickname },
+        { headers: { Authorization: token } },
+      );
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }

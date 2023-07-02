@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 
@@ -8,9 +8,10 @@ import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import IdPasswordForm from '../components/common/IdPasswordForm';
 
-import { EDIT, CHANGE_INFO } from '../static/constants';
-import { resetFields, setErrors, setNewPassword, setNewPasswordCheck } from '../redux/slices/userInfoChangeSlice';
+import { CHANGE_INFO, EDIT } from '../static/constants';
+import { setErrors, setNewPassword, setNewPasswordCheck } from '../redux/slices/userInfoChangeSlice';
 import { updatePasswordAPI } from '../redux/api/userInfoUpdateAPI';
+import { resetFields } from '../redux/slices/signinSlice';
 
 function EditProfilePage() {
   const inputFields = [
@@ -19,12 +20,11 @@ function EditProfilePage() {
     { id: 'newPasswordCheck', label: '비밀번호 재확인', type: 'password' },
   ];
   const { newPassword, newPasswordCheck, errors } = useSelector((state) => state.userInfoChange);
-  const username = localStorage.getItem('username');
+  const { user } = useSelector((state) => state.auth);
+
+  const username = user.username;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // TODO: 서버에서 가져온 데이터로 추후 변경
-  const email = localStorage.getItem('signup-email');
 
   // 유효성 검사
   const validateField = useCallback(
@@ -57,7 +57,7 @@ function EditProfilePage() {
 
   /** 비밀번호 변경 */
   const handleUpdatePassword = useCallback(() => {
-    dispatch(updatePasswordAPI({ username, newPassword }));
+    dispatch(updatePasswordAPI({ token: user.token, password: newPassword }));
     dispatch(resetFields());
     navigate('/myPage');
   }, [dispatch, newPassword]);
@@ -77,8 +77,7 @@ function EditProfilePage() {
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
 
     if (isFormValid) {
-      dispatch(handleUpdatePassword());
-      console.log('클릭');
+      handleUpdatePassword();
     }
   };
 
@@ -95,7 +94,7 @@ function EditProfilePage() {
                 key={field.id}
                 label={field.label}
                 type={field.type}
-                value={field.id === 'email' ? email : null}
+                value={field.id === 'email' ? username : null}
                 color={errors[field.id] && errors[field.id].isError ? '#ff0000' : '#d9d9d9'}
                 onChange={(event) => validateField(field.id, event.target.value)}
                 errors={errors[field.id] && errors[field.id].isError ? errors[field.id] : ''}

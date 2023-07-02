@@ -3,13 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import NearLoacation from '../components/registerLocationPage/NearLoacation';
 import SearchBar from '../components/common/navBar/SearchBar';
-import ShowCase from '../components/common/ShowCase';
 import useDebounce from '../hooks/useDebounce';
 
 import { DEBOUNCE_LIMIT_TIME, NEAR_LOCATION, SEARCH_LOCATION } from '../static/constants';
-import { signUpAPI } from '../redux/api/authApi';
 import { useQuery } from 'react-query';
 import convertConventionUtil from '../utils/convertConventionUtil';
+import { signUpAPI } from '../redux/api/authApi';
+import { Show } from '../components/common/ShowCase';
 
 function RegisterLocationPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,10 +33,9 @@ function RegisterLocationPage() {
   );
 
   const onClickLocation = async (address) => {
-    console.log('hi', address);
     try {
       if (prevPath === '/permission') {
-        await signUpAPI(address.id);
+        await signUpAPI({ addressId: address.id });
         navigate('/register-complete');
       } else {
         // TODO modify location
@@ -81,15 +80,12 @@ function RegisterLocationPage() {
       <SearchBar placeholder={SEARCH_LOCATION} onChange={onChangeHandler} />
 
       <div className="flex items-center h-[29px] my-[20px] ml-[15px] font-semibold text-[12px]">{NEAR_LOCATION}</div>
-      <ShowCase
-        className="flex flex-col items-center gap-[13px]"
-        contents={
-          searchedData &&
+      <Show className="w-full h-[668px] px-[15px] overflow-scroll">
+        {searchedData &&
           searchedData.map((el, id) => (
             <NearLoacation key={id} location={el.address} onClick={() => onClickLocation(el)} isLoading={isLoading} />
-          ))
-        }
-      />
+          ))}
+      </Show>
     </div>
   );
 }

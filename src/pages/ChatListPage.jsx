@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/common/navBar/TabBar';
 import TextBar from '../components/common/navBar/TextBar';
-import ShowCase from '../components/common/ShowCase';
+import { Show } from '../components/common/ShowCase';
 
 const ChatListPage = () => {
   const chatData = [
@@ -22,7 +22,7 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 1,
     },
     {
       id: 3,
@@ -31,7 +31,7 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 12,
     },
     {
       id: 4,
@@ -40,7 +40,7 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 0,
     },
     {
       id: 5,
@@ -49,7 +49,7 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 3,
     },
     {
       id: 6,
@@ -58,7 +58,7 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 11,
     },
     {
       id: 7,
@@ -67,7 +67,7 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 0,
     },
     {
       id: 8,
@@ -76,25 +76,25 @@ const ChatListPage = () => {
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 44,
     },
     {
       id: 9,
       photo: '',
-      title: '',
+      title: '고추장 매니아가 전합니다.',
       people: 5,
       message: '고추장 1+1인데 나누실래요?',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 1,
     },
     {
       id: 10,
       photo: '',
-      title: '',
+      title: '우울할때는 고기앞으로',
       people: 5,
       message: '이마트에서 행사하네요 고기사러',
       timestamp: '2023.06.25 12:20',
-      unread: 10,
+      unread: 0,
     },
   ];
   const lastChat = chatData[chatData.length - 1]; // 마지막 채팅 데이터 가져오기
@@ -110,8 +110,8 @@ const ChatListPage = () => {
   return (
     <>
       <TextBar title={'채팅'} />
-      <ShowCase
-        contents={
+      <Show className="w-full h-[668px] px-[15px] overflow-scroll">
+        {
           <div className="">
             {/* 채팅리스트가 없을 때 */}
             {!chatData && (
@@ -162,7 +162,7 @@ const ChatListPage = () => {
                       <div className="absolute top-0 right-[14px] w-[56px] flex flex-wrap justify-end">
                         <p className="text-[10px] text-gray leading-[15px] text-right mb-[10px]">{formattedTime}</p>
                         <div className="w-[20px] h-[20] rounded-full bg-[#EE0707] text-center text-white text-[13px]">
-                          <p>{chat.unread}</p>
+                          <p>{chat.unread !== 0 ? chat.unread : ''}</p>
                         </div>
                       </div>
                     </div>
@@ -173,7 +173,7 @@ const ChatListPage = () => {
             </div>
           </div>
         }
-      />
+      </Show>
       <TabBar />
     </>
   );

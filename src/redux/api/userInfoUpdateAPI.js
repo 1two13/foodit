@@ -44,10 +44,18 @@ export const getUserInfoAPI = createAsyncThunk('signin/inquireUserInfo', async (
 /** 사용자 정보(비밀번호) 변경 */
 export const updatePasswordAPI = createAsyncThunk(
   'userInfoChange/updatePassword',
-  async ({ username }, { rejectWithValue }) => {
+  async ({ token, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/user/modify`, { username });
-      return response.data;
+      const response = await axios.post(
+        `${BASE_URL}/user/modify`,
+        { password },
+        {
+          headers: {
+            Authorization: token,
+          },
+        },
+      );
+      return response.status;
     } catch (error) {
       return rejectWithValue(error.message);
     }

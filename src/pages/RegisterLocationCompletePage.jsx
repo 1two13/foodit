@@ -5,12 +5,14 @@ import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import ImageAndMessage from '../components/common/ImageAndMessage';
 
-import { MOVE_TO_HOME, REGISTER_LOCATION_COMPLETE } from '../static/constants';
+import { MOVE_TO_HOME } from '../static/constants';
+import { useSelector } from 'react-redux';
 
 const RegisterLocationCompletePage = () => {
   const navigate = useNavigate();
   const moveToHomePage = () => navigate('/');
-  const nickname = localStorage.getItem('signup-nickname');
+  const { user } = useSelector((state) => state.auth);
+  const nickname = user.nickname ? user.nickname : localStorage.getItem('signup-nickname');
 
   return (
     <div className="relative w-[390px] overflow-hidden">

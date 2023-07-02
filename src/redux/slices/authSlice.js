@@ -19,6 +19,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setNickname(state, action) {
+      state.user = { ...state.user, nickname: action.payload };
+    },
     loginStart(state) {
       state.isLoading = true;
       state.error = null;
@@ -71,7 +74,15 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logoutStart, logoutSuccess, logoutFailure, setUserInfo } =
-  authSlice.actions;
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logoutStart,
+  logoutSuccess,
+  logoutFailure,
+  setUserInfo,
+  setNickname,
+} = authSlice.actions;
 
 export default authSlice.reducer;

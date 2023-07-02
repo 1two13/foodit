@@ -4,6 +4,7 @@ import { FcCheckmark } from 'react-icons/fc';
 import { debounce } from 'lodash';
 import { setErrors, setNewNickname } from '../../redux/slices/userInfoChangeSlice';
 import { updateNicknameAPI } from '../../redux/api/userInfoUpdateAPI';
+import { setNickname } from '../../redux/slices/authSlice';
 
 function MyProfile({ cameraSvg = '', writingSvg }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -33,6 +34,7 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
   const handleUpdateNickname = useCallback(() => {
     isUpdateMode();
     dispatch(updateNicknameAPI({ token: user.token, nickname: newNickname }));
+    dispatch(setNickname(newNickname));
   }, [dispatch, newNickname]);
 
   /** 닉네임 유효성 검사 */

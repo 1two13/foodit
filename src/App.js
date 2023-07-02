@@ -62,15 +62,15 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <div className="page-wrapper">
           <Routes>
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/splash-screen" element={<SplashScreen />} />
+            <Route path="/walkthrough" element={<Walkthrough />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register-location" element={<RegisterLocationPage />} />
             <Route path="/register-location-complete" element={<RegisterLocationCompletePage />} />
             <Route path="/register-complete" element={<RegisterComplete />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/permission" element={<PermissionPage />} />
-            <Route path="/" element={<SplashScreen />} />
-            <Route path="/walkthrough" element={<Walkthrough />} />
             <Route path="/chat" element={authNavigate(<Chat />)} />
             <Route path="/chatlist" element={authNavigate(<ChatList />)} />
             <Route path="/search" element={<SearchPage />} />

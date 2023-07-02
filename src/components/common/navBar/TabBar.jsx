@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { writingSlice } from '../../../redux/slices/writingSlice.js';
@@ -16,12 +16,11 @@ const TabBar = () => {
     if (tabId === 'TabCategories') path = '/category';
     else if (tabId === 'TabAddPost') {
       path = '/writing';
-      localStorage.clear();
       dispatch(writingSlice.actions.setImageUrl(null));
     } else if (tabId === 'TabChat') path = '/chatlist';
     else if (tabId === 'TabMyPage') path = '/myPage';
 
-    navigate(path);
+    navigate(path, { state: { before: location.pathname } });
   };
 
   useEffect(() => {

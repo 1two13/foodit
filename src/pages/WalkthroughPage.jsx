@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Carousel from '../components/common/Carousel';
 import ImageAndMessage from '../components/common/ImageAndMessage';
@@ -11,9 +11,16 @@ const WalkthroughPage = () => {
   const [buttonClicked, setButtonClicked] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (window.localStorage.getItem('walkthrough')) {
+      navigate('/');
+    }
+  }, []);
+
   const startHandler = () => {
     if (buttonClicked) {
-      navigate('/signin');
+      window.localStorage.setItem('walkthrough', 'true');
+      navigate('/signin', { state: { before: '/' } });
     } else {
       setCarouselColor(['#d9d9d9', '#00c92c']);
       setFirstImageVisible(false);

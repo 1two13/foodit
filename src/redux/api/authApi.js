@@ -1,8 +1,9 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import convertConventionUtil from '../../utils/convertConventionUtil';
 
 const encryptionKey = process.env.REACT_APP_SECRET_KEY;
-const BASE_URL = 'http://localhost:8080/api/v1';
+const BASE_URL = '/api/vi';
 
 /** 회원가입 유저정보 암호화 후 로컬스토리지에 저장 */
 export const saveUserInfo = async ({ username, password, nickname }) => {
@@ -21,7 +22,8 @@ export const saveUserInfo = async ({ username, password, nickname }) => {
 /** 회원가입 페이지 - 사용자 아이디 중복 검증 */
 export const checkEmailAPI = async ({ username }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/auth/join/check`, username);
+    console.log(username);
+    const response = await axios.post(`${BASE_URL}/auth/join/check`, { username });
     const result = response.data;
     return result;
   } catch (error) {
@@ -30,30 +32,29 @@ export const checkEmailAPI = async ({ username }) => {
 };
 
 /** 회원가입 API 호출 */
-export const signUpAPI = async ({ address }) => {
+export const signUpAPI = async ({ addressId }) => {
   const nickname = localStorage.getItem('signup-nickname');
-  const encryptedUsername = localStorage.getItem('signup-email');
+  const encryptedUsername = localStorage.getItem('signup-username');
   const encryptedPassword = localStorage.getItem('signup-password');
 
+  console.log(nickname, encryptedUsername, encryptedPassword);
   const decryptedUsername = CryptoJS.AES.decrypt(encryptedUsername, encryptionKey).toString(CryptoJS.enc.Utf8);
   const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, encryptionKey).toString(CryptoJS.enc.Utf8);
 
   const userInfo = {
-    userId: '',
-    email: decryptedUsername,
-    pw: decryptedPassword,
-    name: nickname,
-    address: address,
+    username: decryptedUsername,
+    password: decryptedPassword,
+    nickname: nickname,
+    addressId: addressId,
   };
 
   try {
-    const response = await axios.post(`${BASE_URL}/auth/join/Proc`, userInfo);
+    const response = await axios.post(`${BASE_URL}/auth/joinProc`, userInfo);
     const result = response.data;
 
-    if (result.ACCESS_TOKEN) {
-      userInfo.userId = result.ACCESS_TOKEN;
+    if (!result?.id) {
+      throw new Error(result);
     }
-    console.log(result);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -66,16 +67,27 @@ export const signInAPI = async ({ username, password }) => {
       username,
       password,
     });
-    const result = response.data;
+    const user = convertConventionUtil.snakeToCamelCase(response.data);
 
-    if (result.ACCESS_TOKEN) {
-      localStorage.setItem('signin-token', result.ACCESS_TOKEN);
+    if (!user?.id) {
+      throw new Error('signIn failed.');
     }
 
-    return result;
+    localStorage.setItem('token', user.token);
+    return user;
   } catch (error) {
     throw new Error(error.message);
   }
+};
+
+export const getUserInfoAPI = async ({ token }) => {
+  return fetch(`${BASE_URL}/user/detail`, {
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((res) => res.json())
+    .then((json) => convertConventionUtil.snakeToCamelCase(json));
 };
 
 /** 로그아웃 API 호출 */

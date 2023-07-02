@@ -87,8 +87,6 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
     },
   );
 
-  console.log(searchedOutput, reload);
-
   useEffect(() => {
     if (!reload) return;
 

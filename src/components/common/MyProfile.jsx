@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FcCheckmark } from 'react-icons/fc';
 import { debounce } from 'lodash';
 import { setErrors, setNewNickname } from '../../redux/slices/userInfoChangeSlice';
@@ -8,8 +8,8 @@ import { updateNicknameAPI } from '../../redux/api/userInfoUpdateAPI';
 function MyProfile({ cameraSvg = '', writingSvg }) {
   const [isEditing, setIsEditing] = useState(false);
   const { newNickname, errors } = useSelector((state) => state.userInfoChange);
-  const username = localStorage.getItem('username');
-  const nickname = localStorage.getItem('nickname');
+  const { user } = useSelector((state) => state.auth);
+  const nickname = user.nickname;
   const inputRef = useRef();
   const dispatch = useDispatch();
 
@@ -32,7 +32,7 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
   /** 닉네임 변경 시도 */
   const handleUpdateNickname = useCallback(() => {
     isUpdateMode();
-    dispatch(updateNicknameAPI({ username, nickname: newNickname }));
+    dispatch(updateNicknameAPI({ token: user.token, nickname: newNickname }));
   }, [dispatch, newNickname]);
 
   /** 닉네임 유효성 검사 */

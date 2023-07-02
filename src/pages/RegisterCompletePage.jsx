@@ -9,6 +9,7 @@ const RegisterCompletePage = () => {
 
   const handleMoveSignIn = () => {
     navigate(`/signin`);
+    localStorage.removeItem('signup-username');
     localStorage.removeItem('signup-nickname');
     localStorage.removeItem('signup-password');
     localStorage.removeItem('registeredLocation');

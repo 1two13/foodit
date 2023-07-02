@@ -11,8 +11,7 @@ const writePost = (post, user, image) => {
   return fetch('/api/vi/posts/save', {
     method: 'POST',
     headers: {
-      Authorization:
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZXIxIiwiaWF0IjoxNjg4MjQ0MDEwLCJleHAiOjE2ODg2MDQwMTB9.L2YVXvMQuJqhn99W91ZFZkbfRI5RshZS1qWAUbQ7V_Kc5c-JaufkXrTq-WkUrHcEPHbHA6IF177yxezeBjmORw', // user.token
+      Authorization: user.token,
     },
     body: formData,
   }).then((res) => res.json());
@@ -58,22 +57,13 @@ const postDummyData = [
   },
 ];
 
-const joinPost = (postId) => {
-  if (postDummyData[postId - 1].isJoin) {
-    return;
-  }
-
-  const dummy = postDummyData[postId - 1];
-  dummy.isJoin = true;
-  dummy.friendsList.push({
-    id: dummy.friendsList.length + 1,
-    name: '나',
-    writer: false,
-  });
-
-  return fetch(`/posts/${postId}`)
-    .then(() => postDummyData[postId - 1])
-    .catch((err) => postDummyData[postId - 1]);
+const joinPost = (postId, token) => {
+  return fetch(`/api/vi/posts/participate/${postId}`, {
+    method: 'POST',
+    headers: {
+      Authorization: token,
+    },
+  }).then((res) => res.json());
 };
 
 const getPost = (postId) => {

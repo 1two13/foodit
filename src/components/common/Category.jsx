@@ -33,7 +33,7 @@ function Category({ src, firstName, lastName = '' }) {
 
   return (
     <div
-      className="border flex flex-col items-center flex-1 w-[1/5px] h-[90px] cursor-pointer"
+      className="flex flex-col items-center w-[1/5px] h-[90px] cursor-pointer"
       onClick={() => onCategorySelect(name, src)}
     >
       <button>

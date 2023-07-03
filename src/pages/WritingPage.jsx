@@ -110,7 +110,7 @@ function WritingPage() {
     <div className="top-bar mt-[47px] h-full flex flex-col">
       <BackButton />
       <div className="flex-1 overflow-scroll">
-        <div className="flex justify-center">
+        <div className="flex justify-center relative">
           <div
             className="flex items-center justify-center w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
             onClick={addImages}
@@ -119,9 +119,13 @@ function WritingPage() {
             <button className="flex flex-col items-center text-[13px] text-darkGray">
               <input type="file" className="hidden" multiple accept="image/png, image/jpg, image/jpeg" ref={imgRef} />
               {post.imageUrl && (
-                <img alt="" src={post.imageUrl} className="w-[360px] h-[238px] rounded-[15px] z-[50]" />
+                <img
+                  alt=""
+                  src={post.imageUrl}
+                  className="w-[360px] h-[238px] rounded-[15px] z-[50] absolute top-[10px]"
+                />
               )}
-              <div className="flex flex-col top-[177px] absolute">
+              <div className="flex flex-col top-[177px]">
                 <svg
                   width="76"
                   height="68"
@@ -141,11 +145,11 @@ function WritingPage() {
           </div>
         </div>
 
-        <div>
+        <div class="relative">
           {post.imageUrl ? (
             <button
               onClick={removeImage}
-              className="flex items-center justify-center h-[32px] w-[32px] top-[114px] ml-[331px] rounded-full bg-[black] opacity-[60%] absolute z-[999]"
+              className="absolute top-[-200px] flex items-center justify-center h-[32px] w-[32px] top-[114px] ml-[331px] rounded-full bg-[black] opacity-[60%] absolute z-[999]"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path

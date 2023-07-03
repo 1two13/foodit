@@ -82,29 +82,31 @@ function EditProfilePage() {
   };
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <TextAndBackBar title={CHANGE_INFO} />
-      <MyProfile />
+      <div className="flex-1 overflow-scroll">
+        <MyProfile />
 
-      <form className="flex flex-wrap justify-center">
-        <div className="flex flex-wrap w-[360px]">
-          {inputFields.slice(0, 3).map((field) => (
-            <React.Fragment key={field.id}>
-              <IdPasswordForm
-                key={field.id}
-                label={field.label}
-                type={field.type}
-                value={field.id === 'email' ? username : null}
-                color={errors[field.id] && errors[field.id].isError ? '#ff0000' : '#d9d9d9'}
-                onChange={(event) => validateField(field.id, event.target.value)}
-                errors={errors[field.id] && errors[field.id].isError ? errors[field.id] : ''}
-                readOnly={field.id === 'email' ? 'readOnly' : ''}
-              />
-            </React.Fragment>
-          ))}
-        </div>
-      </form>
-      <LongButton contents={EDIT} onClick={handleSubmit} />
+        <form className="flex flex-wrap justify-center">
+          <div className="flex flex-wrap w-[360px]">
+            {inputFields.slice(0, 3).map((field) => (
+              <React.Fragment key={field.id}>
+                <IdPasswordForm
+                  key={field.id}
+                  label={field.label}
+                  type={field.type}
+                  value={field.id === 'email' ? username : null}
+                  color={errors[field.id] && errors[field.id].isError ? '#ff0000' : '#d9d9d9'}
+                  onChange={(event) => validateField(field.id, event.target.value)}
+                  errors={errors[field.id] && errors[field.id].isError ? errors[field.id] : ''}
+                  readOnly={field.id === 'email' ? 'readOnly' : ''}
+                />
+              </React.Fragment>
+            ))}
+          </div>
+        </form>
+        <LongButton contents={EDIT} onClick={handleSubmit} />
+      </div>
     </div>
   );
 }

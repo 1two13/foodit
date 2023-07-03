@@ -12,7 +12,11 @@ const SubTitle = styled.h1`
 
 function ImageAndMessage({ mainMessage, subMessage, color, opacity, src, marginTop }) {
   return (
-    <Wrapper className="mt-[117px] w-full transition-all duration-500 ease" opacity={opacity} marginTop={marginTop}>
+    <Wrapper
+      className="image-top mt-[117px] w-full transition-all duration-500 ease"
+      opacity={opacity}
+      marginTop={marginTop}
+    >
       <div
         className="w-[288px] h-[288px] mx-auto bg-gray"
         style={{ backgroundImage: `url(${src})`, backgroundPosition: 'center', backgroundSize: 'cover' }}

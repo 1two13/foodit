@@ -36,7 +36,7 @@ const categories = [
 
 function CategoryList() {
   return (
-    <div className="flex justify-center mx-[19px]">
+    <div className="flex justify-center mx-[19px] overflow-scroll">
       <div className="flex items-center flex-wrap gap-x-[20px] gap-y-[29px] w-[360px] mt-[25px] justify-between">
         {categories.map((category, index) => (
           <Category key={index} src={category.src} firstName={category.firstName} lastName={category.lastName} />

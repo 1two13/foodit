@@ -5,7 +5,7 @@ const HomeBar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-between items-center w-full mt-[47px]">
+    <div className="top-bar flex justify-between items-center w-full mt-[47px]">
       {/* 로고 */}
       <div className="top ml-[15px]">
         <svg width="92" height="23" viewBox="0 0 92 23" fill="none" xmlns="http://www.w3.org/2000/svg">

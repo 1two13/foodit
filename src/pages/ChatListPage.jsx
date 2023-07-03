@@ -12,7 +12,7 @@ const ChatListPage = () => {
       title: '다크 초코씨솔트 프로틴 바 같이 사실 분~?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 10,
     },
     {
@@ -21,7 +21,7 @@ const ChatListPage = () => {
       title: '우리마트에서 바나나 같이사요',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 1,
     },
     {
@@ -30,7 +30,7 @@ const ChatListPage = () => {
       title: '네고왕에서 네고한 냉면 나눠살래요?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 12,
     },
     {
@@ -39,7 +39,7 @@ const ChatListPage = () => {
       title: '강아지 사료 대용량 나눕시다!',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 0,
     },
     {
@@ -48,7 +48,7 @@ const ChatListPage = () => {
       title: '텀블러 2+1이던데... 하나씩 살래요?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 3,
     },
     {
@@ -57,7 +57,7 @@ const ChatListPage = () => {
       title: '가평 빠지 성인1+1 같이 가실 분?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 11,
     },
     {
@@ -66,7 +66,7 @@ const ChatListPage = () => {
       title: '수박이 너무 커요 반띵하실?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 0,
     },
     {
@@ -75,7 +75,7 @@ const ChatListPage = () => {
       title: '같이 코스트코 가서 쉐어할 사람?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 44,
     },
     {
@@ -84,7 +84,7 @@ const ChatListPage = () => {
       title: '고추장 매니아가 전합니다.',
       people: 5,
       message: '고추장 1+1인데 나누실래요?',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 1,
     },
     {
@@ -93,7 +93,7 @@ const ChatListPage = () => {
       title: '우울할때는 고기앞으로',
       people: 5,
       message: '이마트에서 행사하네요 고기사러',
-      timestamp: '2023.06.25 12:20',
+      timestamp: '오후 12:20',
       unread: 0,
     },
   ];
@@ -104,13 +104,14 @@ const ChatListPage = () => {
   const navigate = useNavigate();
   const handleOpenChat = () => {
     // navigate('/chat');
+    alert('채팅기능 구현 후 업데이트 예정입니다.');
     console.log('채팅기능 구현 후 업데이트 예정입니다.');
   };
 
   return (
-    <>
+    <div className="flex flex-col max-height">
       <TextBar title={'채팅'} />
-      <Show className="w-full h-[668px] px-[15px] overflow-scroll">
+      <Show className="w-full flex-1 px-[15px] overflow-scroll">
         {
           <div className="">
             {/* 채팅리스트가 없을 때 */}
@@ -160,7 +161,7 @@ const ChatListPage = () => {
                         </p>
                       </div>
                       <div className="absolute top-0 right-[14px] w-[56px] flex flex-wrap justify-end">
-                        <p className="text-[10px] text-gray leading-[15px] text-right mb-[10px]">{formattedTime}</p>
+                        <p className="text-[10px] text-gray leading-[15px] text-right mb-[10px]">{chat.timestamp}</p>
                         <div className="w-[20px] h-[20] rounded-full bg-[#EE0707] text-center text-white text-[13px]">
                           <p>{chat.unread !== 0 ? chat.unread : ''}</p>
                         </div>
@@ -175,7 +176,7 @@ const ChatListPage = () => {
         }
       </Show>
       <TabBar />
-    </>
+    </div>
   );
 };
 

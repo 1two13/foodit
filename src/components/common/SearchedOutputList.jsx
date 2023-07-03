@@ -42,7 +42,17 @@ const Wrapper = styled.div`
   }
 `;
 
-function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCallback, height, paddingBottom }) {
+function SearchedOutputList({
+  keyword,
+  category,
+  orderBy,
+  reload,
+  reloadFinishCallback,
+  height,
+  paddingBottom,
+  paddingTitleX,
+  paddingListX,
+}) {
   const categoryList = [
     { key: '전체', image: totalGray },
     { key: '과일', image: fruitGray },
@@ -134,12 +144,14 @@ function SearchedOutputList({ keyword, category, orderBy, reload, reloadFinishCa
 
   return (
     <>
-      <div className="mb-[15px] text-[13px]">총 {searchedOutput?.totalElements ?? 0}개</div>
+      <div className={`mb-[15px] text-[13px] ${paddingTitleX ? paddingTitleX : ''}`}>
+        총 {searchedOutput?.totalElements ?? 0}개
+      </div>
       {!isLoading ? (
         <Wrapper
-          className={`container flex flex-col px-[15px] mb-[27px] overflow-scroll gap-[20px] ${
+          className={`container flex-1 flex flex-col px-[15px] mb-[10px] overflow-scroll gap-[20px] ${
             height ? height : 'h-[540px]'
-          } ${paddingBottom ? paddingBottom : ''}`}
+          } ${paddingBottom ? paddingBottom : ''} ${paddingListX ? paddingListX : ''} `}
           onScroll={throttleScroll}
         >
           {searchedOutput?.content.map((data) => (

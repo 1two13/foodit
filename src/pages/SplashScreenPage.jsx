@@ -82,10 +82,8 @@ const SplashScreenPage = () => {
           </defs>
         </svg>
       </div>
-      <div id="logo" className="w-full h-full flex justify-center items-center">
-        <div className="fixed bottom-0">
-          <img src={process.env.PUBLIC_URL + '/images/splash.png'} alt="Splash" />
-        </div>
+      <div className="fixed bottom-0">
+        <img src={process.env.PUBLIC_URL + '/images/splash.png'} alt="Splash" />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import BackButton from './BackButton';
 
 function SearchBar({ placeholder, onChange, onSubmit, keyword }) {
   return (
-    <form className="flex h-[44px] mt-[47px]" onSubmit={onSubmit}>
+    <form className="top-bar flex h-[44px] mt-[47px]" onSubmit={onSubmit}>
       <BackButton />
       <input
         placeholder={placeholder}

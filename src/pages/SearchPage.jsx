@@ -43,7 +43,7 @@ function SearchPage() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col max-height">
       <SearchBar
         placeholder={ENTER_INPUT}
         placeholderColor={'white'}
@@ -59,15 +59,15 @@ function SearchPage() {
         <Select defaultValue={selectedOption} options={options} onChange={onChangeSelector} />
       </div>
 
-      <div className="mx-[15px]">
-        <SearchedOutputList
-          reload={reload}
-          reloadFinishCallback={() => setReload(false)}
-          keyword={keyword}
-          category={selectedCategory}
-          orderBy={selectedOption.orderBy}
-        />
-      </div>
+      <SearchedOutputList
+        reload={reload}
+        reloadFinishCallback={() => setReload(false)}
+        keyword={keyword}
+        category={selectedCategory}
+        orderBy={selectedOption.orderBy}
+        paddingTitleX={'px-[15px]'}
+        paddingListX={'px-[30px]'}
+      />
 
       <TabBar />
     </div>

@@ -9,7 +9,7 @@ function TextAndBackBar({ title }) {
 
   return (
     <>
-      <div className="mt-[47px] bg-white z-10">
+      <div className="top-bar mt-[47px] bg-white z-10">
         <div className="flex">
           <BackButton onClickHandler={handleMoveBack} />
           <h2 className="w-[190px] text-center text-ellipsis line-clamp-1 whitespace-normal overflow-hidden leading-[44px] absolute left-1/2 translate-x-[-50%] font-semibold">

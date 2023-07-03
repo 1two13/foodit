@@ -20,7 +20,7 @@ export const Show = styled.div`
 `;
 
 function ShowCase({ contents }) {
-  return <Show className="w-full h-[668px] px-[15px] overflow-hidden">{contents}</Show>;
+  return <Show className="w-full flex-1 px-[15px] overflow-hidden flex flex-col">{contents}</Show>;
 }
 
 export default ShowCase;

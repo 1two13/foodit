@@ -13,9 +13,9 @@ const Favorite = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
   return (
-    <div className="pt-[25px] pb-[28px] w-full overflow-x-hidden">
+    <div className="pt-[25px] w-full overflow-hidden min-h-[180px]">
       <Title title={'즐겨찾기'} />
-      <div className="flex justify-between min-h-[91px]">
+      <div className="flex justify-between ">
         {favoriteCategories.map((item, index) => (
           <FavoriteButton
             key={index}

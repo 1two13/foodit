@@ -138,7 +138,7 @@ const TabBar = () => {
   ];
 
   return (
-    <div className="fixed bg-white px-[15px] bottom-0 z-50 h-[85px] w-full border-t-[0.5px] border-solid border-[#A4A4A4]">
+    <div className="fixed bg-white px-[15px] bottom-0 z-50 h-[85px] w-full border-t-[0.5px] border-solid border-[#A4A4A4] max-width">
       <ul className="flex justify-between">
         {Tabs.map((tab) => (
           <li

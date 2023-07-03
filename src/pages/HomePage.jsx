@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useFetcher, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import HomeBar from '../components/common/navBar/HomeBar';
 import TabBar from '../components/common/navBar/TabBar';
@@ -17,23 +17,23 @@ const HomePage = () => {
   }, [categoryParams]);
 
   return (
-    <>
+    <div className="flex flex-col max-height">
       <HomeBar />
       <ShowCase
         contents={
-          <div>
+          <>
             <Favorite />
             <SearchedOutputList
               category={categoryParams}
               reload={category !== categoryParams}
               height={'h-[450px]'}
-              paddingBottom={'pb-[27px]'}
+              paddingBottom={'pb-[10px]'}
             />
-          </div>
+          </>
         }
       />
       <TabBar />
-    </>
+    </div>
   );
 };
 

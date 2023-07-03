@@ -18,7 +18,7 @@ function ChatBar() {
   };
 
   return (
-    <div className="fixed bottom-0 z-50 h-[85px] w-full border-t-[1px] border-solid border-[#A4A4A4]">
+    <div className="top-bar fixed bottom-0 z-50 h-[85px] w-full border-t-[1px] border-solid border-[#A4A4A4]">
       <input
         type="text"
         className="w-[100%] h-[44px] pl-[5%] pr-[15%] focus:outline-none tracking-wide"

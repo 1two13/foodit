@@ -1,74 +1,173 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import MyPageCategory from '../components/myPage/MyPageCategory';
-import MyProfile from '../components/common/MyProfile';
-import TabBar from '../components/common/navBar/TabBar';
+import { useNavigate, useParams } from 'react-router';
+import { useQuery } from 'react-query';
+import Swal from 'sweetalert2';
 
-import { CHANGE_INFO, LOGOUT, MY_PAGE, SETTING_LOCATION } from '../static/constants';
-import { logoutFailure, logoutStart, logoutSuccess } from '../redux/slices/authSlice';
-import Loading from '../components/common/loading/Loading';
+import BackButton from '../components/common/navBar/BackButton';
+import FriendsProfile from '../components/common/FriendsProfile';
+import postApi from '../api/postApi';
 
-function MyPage() {
-  const { isLoading } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+import totalGray from '../images/totalGray.png';
+import aquaticGray from '../images/aquaticGray.png';
+import breadGray from '../images/breadGray.png';
+import ecoGray from '../images/ecoGray.png';
+import fruitGray from '../images/fruitGray.png';
+import kimchiGray from '../images/kimchiGray.png';
+import meatGray from '../images/meatGray.png';
+import milkGray from '../images/milkGray.png';
+import waterGray from '../images/waterGray.png';
+import noodlesGray from '../images/noodlesGray.png';
+import riceGray from '../images/riceGray.png';
+import seasoningGray from '../images/seasoningGray.png';
+import snackGray from '../images/snackGray.png';
+import vegetableGray from '../images/vegetableGray.png';
+import coffeeGray from '../images/coffeeGray.png';
+
+import { ACTUAL_PAYMENT_AMOUNT, CANCEL, CONFIRM, DIVISION, JOIN, JOIN_ALERT, SUM, WON } from '../static/constants';
+import { useSelector } from 'react-redux';
+import { LoadingContents } from '../components/common/loading/LoadingContents';
+
+function PostsPage() {
+  const categoryList = [
+    { key: '전체', image: totalGray },
+    { key: '과일', image: fruitGray },
+    { key: '채소', image: vegetableGray },
+    { key: '쌀/잡곡/견과', image: riceGray },
+    { key: '정육/계란류', image: meatGray },
+    { key: '수산물/건해산', image: aquaticGray },
+    { key: '우유/유제품', image: milkGray },
+    { key: '김치/반찬/델리', image: kimchiGray },
+    { key: '생수/음료/주류', image: waterGray },
+    { key: '커피/차/원두', image: coffeeGray },
+    { key: '면류/통조림', image: noodlesGray },
+    { key: '양념/오일', image: seasoningGray },
+    { key: '과자/간식', image: snackGray },
+    { key: '베이커리/잼', image: breadGray },
+    { key: '친환경/유기농', image: ecoGray },
+  ];
+
+  const postId = useParams().postId;
   const navigate = useNavigate();
 
-  /** 로그아웃 시도 */
-  const handleLogout = async () => {
-    try {
-      dispatch(logoutStart());
-      localStorage.clear();
-      localStorage.setItem('walkthrough', 'true');
-      dispatch(logoutSuccess());
-      navigate('/signin');
-    } catch (error) {
-      dispatch(logoutFailure('로그아웃에 실패했습니다.'));
-    }
+  const { user } = useSelector((state) => state.auth);
+
+  // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
+  const {
+    isLoading,
+    data: post,
+    refetch,
+  } = useQuery('post', () => postApi.getPost(postId), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+
+  if (isLoading) {
+    return <LoadingContents />;
+  }
+
+  const maxPeople = post.limit;
+  const imageUrl = post.imageUrl;
+  const title = post.title;
+  const category = categoryList[post.categoryId];
+  const totalAmount = post.count;
+  const textarea = post.content;
+  const divisionAmount = (totalAmount / maxPeople).toLocaleString();
+  const friendsList = post.participants;
+  const isJoin = !!friendsList.find((friend) => friend.id === user?.id);
+
+  const joinAsMember = () => {
+    Swal.fire({
+      text: JOIN_ALERT,
+      showCancelButton: true,
+      confirmButtonColor: '#39B54A',
+      cancelButtonColor: '#CCCCCC',
+      confirmButtonText: CONFIRM,
+      cancelButtonText: CANCEL,
+      reverseButtons: true,
+    }).then(async (result) => {
+      if (!user?.id) {
+        navigate('/signin');
+        return;
+      }
+
+      if (result.isConfirmed && !isJoin) {
+        await postApi.joinPost(postId, user.token);
+        refetch();
+      }
+    });
   };
 
+  const clearData = () => navigate('/');
+
   return (
-    <div className="top-bar mt-[47px]">
-      <div className="flex flex-col justify-center items-center">
-        <div className="text-[16px] font-medium">{MY_PAGE}</div>
-        <MyProfile
-          // cameraSvg={
-          //   <svg
-          //     className="absolute top-[100px] right-[142px]"
-          //     width="31"
-          //     height="31"
-          //     viewBox="0 0 31 31"
-          //     fill="none"
-          //     xmlns="http://www.w3.org/2000/svg"
-          //   >
-          //     <rect width="31" height="31" rx="15.5" fill="black" fillOpacity="0.6" />
-          //     <path
-          //       d="M9.5 11.3333H11.75L13.25 10H17.75L19.25 11.3333H21.5C21.8978 11.3333 22.2794 11.4738 22.5607 11.7239C22.842 11.9739 23 12.313 23 12.6667V20.6667C23 21.0203 22.842 21.3594 22.5607 21.6095C22.2794 21.8595 21.8978 22 21.5 22H9.5C9.10218 22 8.72064 21.8595 8.43934 21.6095C8.15804 21.3594 8 21.0203 8 20.6667V12.6667C8 12.313 8.15804 11.9739 8.43934 11.7239C8.72064 11.4738 9.10218 11.3333 9.5 11.3333ZM15.5 13.3333C14.5054 13.3333 13.5516 13.6845 12.8483 14.3096C12.1451 14.9348 11.75 15.7826 11.75 16.6667C11.75 17.5507 12.1451 18.3986 12.8483 19.0237C13.5516 19.6488 14.5054 20 15.5 20C16.4946 20 17.4484 19.6488 18.1517 19.0237C18.8549 18.3986 19.25 17.5507 19.25 16.6667C19.25 15.7826 18.8549 14.9348 18.1517 14.3096C17.4484 13.6845 16.4946 13.3333 15.5 13.3333ZM15.5 14.6667C16.0967 14.6667 16.669 14.8774 17.091 15.2525C17.5129 15.6275 17.75 16.1362 17.75 16.6667C17.75 17.1971 17.5129 17.7058 17.091 18.0809C16.669 18.456 16.0967 18.6667 15.5 18.6667C14.9033 18.6667 14.331 18.456 13.909 18.0809C13.4871 17.7058 13.25 17.1971 13.25 16.6667C13.25 16.1362 13.4871 15.6275 13.909 15.2525C14.331 14.8774 14.9033 14.6667 15.5 14.6667Z"
-          //       fill="white"
-          //     />
-          //   </svg>
-          // }
-          writingSvg={
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M14.1677 0.732422L12.2771 2.62305L17.3552 7.70117L19.2458 5.81055C20.2224 4.83398 20.2224 3.25195 19.2458 2.27539L17.7068 0.732422C16.7302 -0.244141 15.1482 -0.244141 14.1716 0.732422H14.1677ZM11.3943 3.50586L2.28879 12.6152C1.88254 13.0215 1.58567 13.5254 1.4216 14.0762L0.0387918 18.7754C-0.0588645 19.1074 0.0309793 19.4629 0.273167 19.7051C0.515354 19.9473 0.870823 20.0371 1.19895 19.9434L5.89817 18.5605C6.44895 18.3965 6.95285 18.0996 7.3591 17.6934L16.4724 8.58398L11.3943 3.50586Z"
-                fill="#9D9D9D"
-              />
-            </svg>
-          }
+    <div className="">
+      <div className="w-[100%] mt-[47px]">
+        <BackButton onClickHandler={clearData} />
+      </div>
+
+      <div className="flex justify-center">
+        {/* TODO: map 데이터로 보여주기 */}
+        <img
+          alt=""
+          // TODO: 정확한 사진이 올라가는지 추후 확인 필요
+          src={imageUrl ? imageUrl : category.image}
+          className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />
       </div>
 
-      <div>
-        <MyPageCategory name={SETTING_LOCATION} onClick={() => navigate('/register-location')} />
-        <MyPageCategory name={CHANGE_INFO} onClick={() => navigate('/editProfile')} />
-        <MyPageCategory name={LOGOUT} color={'#EE0707'} onClick={handleLogout} />
+      <div className="overflow-scroll h-[400px]">
+        <div className="mx-[15px]">
+          <FriendsProfile friendsList={friendsList} maxPeople={maxPeople} />
+        </div>
+        <div className="mt-[15px] mx-[15px] mb-[3px] text-[16px] font-semibold">{title}</div>
+        <div className="mx-[15px] text-[10px] text-smokeGray">{category.key}</div>
+        <div className="pt-[34px] mb-[26px] mx-[15px] text-[13px]">{textarea}</div>
+
+        <div className="w-[360px] h-[200px] p-[14px] mx-[15px] mb-[93px] rounded-[10px] bg-hexGray">
+          <div className="w-[332px] h-[113px] p-[13px] rounded-[10px] bg-white font-medium text-[13px]">
+            <div className="flex justify-between pb-[13px] border-b-[0.5px] border-gray font-medium">
+              <div>{SUM}</div>
+              <div>
+                <div>{`${totalAmount.toLocaleString()}${WON}`}</div>
+                <div className="float-right">{DIVISION}</div>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center h-[47px] font-bold text-[16px] text-mainColor">
+              <div>{ACTUAL_PAYMENT_AMOUNT}</div>
+              <div>{`${divisionAmount}${WON}`}</div>
+            </div>
+          </div>
+
+          <div className="flex justify-between px-[13px] pt-[10px] text-[13px] font-medium">
+            <div>{`내 1/${maxPeople} 부담금`}</div>
+            <div>{`${divisionAmount}${WON}`}</div>
+          </div>
+
+          <div className="flex justify-between px-[13px] pt-[10px] text-[13px] font-medium">
+            <div>{`파티원 ${maxPeople - 1}명의 몫`}</div>
+            <div>{`${(totalAmount - totalAmount / maxPeople).toLocaleString()}${WON}`}</div>
+          </div>
+        </div>
       </div>
 
-      {isLoading && <Loading />}
-      <TabBar />
+      <div className="flex justify-between w-[390px] h-[107px] px-[15px] pt-[18px] fixed bottom-0 border-t-[0.2px] border-gray bg-white">
+        <div className="flex flex-col h-[50px]">
+          <div className="text-[10px] text-smokeGray">{`${SUM} ${totalAmount.toLocaleString()}${WON}`}</div>
+          <div className="font-bold text-[16px] text-mainColor">{`${ACTUAL_PAYMENT_AMOUNT} ${divisionAmount}${WON}`}</div>
+        </div>
+        <button
+          onClick={joinAsMember}
+          className={`w-[133px] h-[36px] rounded-[5px] text-white text-[13px] ${
+            isJoin ? 'bg-smokeGray' : 'bg-mainColor'
+          }`}
+          disabled={isJoin}
+        >
+          {JOIN}
+        </button>
+      </div>
     </div>
   );
 }
 
-export default MyPage;
+export default PostsPage;

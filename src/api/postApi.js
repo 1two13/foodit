@@ -17,46 +17,6 @@ const writePost = (post, user, image) => {
   }).then((res) => res.json());
 };
 
-const postDummyData = [
-  {
-    title: '안녕하세요~',
-    content: '저희는 채소를 채고 좋아합니다.',
-    count: 20000,
-    limit: 4,
-    imageUrl: null,
-    categoryId: '채소',
-    isJoin: true,
-    friendsList: [
-      {
-        id: 1,
-        name: '동네친구',
-        writer: true,
-      },
-      {
-        id: 2,
-        name: '아는 형님의',
-        writer: false,
-      },
-    ],
-  },
-  {
-    title: '동네 사람들!',
-    content: '여기 여기 모여라~',
-    count: 10000,
-    limit: 3,
-    imageUrl: null,
-    categoryId: '과일',
-    isJoin: false,
-    friendsList: [
-      {
-        id: 1,
-        name: '하이',
-        writer: true,
-      },
-    ],
-  },
-];
-
 const joinPost = (postId, token) => {
   return fetch(`/api/vi/posts/participate/${postId}`, {
     method: 'POST',

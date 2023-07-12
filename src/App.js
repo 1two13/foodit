@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './styles/App.css';
-import 'tailwindcss/tailwind.css';
 
 import Chat from './pages/ChatPage';
 import ChatList from './pages/ChatListPage';
@@ -22,8 +23,7 @@ import MyPage from './pages/MyPage';
 import EditProfilePage from './pages/EditProfilePage';
 import FavoriteCategories from './components/home/FavoriteCategories';
 import RegisterLocationCompletePage from './pages/RegisterLocationCompletePage';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+
 import { loginFailure, loginStart, loginSuccess } from './redux/slices/authSlice';
 import { getUserInfoAPI } from './redux/api/authApi';
 
@@ -35,11 +35,11 @@ function App() {
   const location = useLocation();
 
   const { isLoading, user } = useSelector((state) => state.auth);
+
   const authNavigate = (element) => {
     if (!isLoading && user.id !== '') {
       return element;
     }
-
     return <Navigate to="/signin" state={{ before: location.state?.before ?? '/' }} />;
   };
 
@@ -49,11 +49,8 @@ function App() {
     (async () => {
       dispatch(loginStart());
       const result = await getUserInfoAPI({ token: user.token });
-      if (result?.id) {
-        dispatch(loginSuccess(result));
-      } else {
-        dispatch(loginFailure(result));
-      }
+      if (result?.id) dispatch(loginSuccess(result));
+      else dispatch(loginFailure(result));
     })();
   }, []);
 

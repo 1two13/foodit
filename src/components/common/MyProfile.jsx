@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FcCheckmark } from 'react-icons/fc';
 import { debounce } from 'lodash';
+
 import { setErrors, setNewNickname } from '../../redux/slices/userInfoChangeSlice';
 import { updateNicknameAPI } from '../../redux/api/userInfoUpdateAPI';
 import { setNickname } from '../../redux/slices/authSlice';
+import { FcCheckmark } from 'react-icons/fc';
 
 function MyProfile({ cameraSvg = '', writingSvg }) {
   const [isEditing, setIsEditing] = useState(false);
   const { newNickname, errors } = useSelector((state) => state.userInfoChange);
   const { user } = useSelector((state) => state.auth);
   const nickname = user.nickname;
+
   const inputRef = useRef();
   const dispatch = useDispatch();
 

@@ -22,7 +22,6 @@ export const saveUserInfo = async ({ username, password, nickname }) => {
 /** 회원가입 페이지 - 사용자 아이디 중복 검증 */
 export const checkEmailAPI = async ({ username }) => {
   try {
-    console.log(username);
     const response = await axios.post(`${BASE_URL}/auth/join/check`, { username });
     const result = response.data;
     return result;
@@ -37,7 +36,6 @@ export const signUpAPI = async ({ addressId }) => {
   const encryptedUsername = localStorage.getItem('signup-username');
   const encryptedPassword = localStorage.getItem('signup-password');
 
-  console.log(nickname, encryptedUsername, encryptedPassword);
   const decryptedUsername = CryptoJS.AES.decrypt(encryptedUsername, encryptionKey).toString(CryptoJS.enc.Utf8);
   const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, encryptionKey).toString(CryptoJS.enc.Utf8);
 

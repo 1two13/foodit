@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import ImageAndMessage from '../components/common/ImageAndMessage';
 
 import { MOVE_TO_HOME } from '../static/constants';
-import { useSelector } from 'react-redux';
 
 const RegisterLocationCompletePage = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const RegisterLocationCompletePage = () => {
         mainMessage={'동네설정 완료'}
         subMessage={
           <>
-            {/* data 받아와서 user.name 넣어주기 */}'{nickname}' 님의 동네 설정이
+            '{nickname}' 님의 동네 설정이
             <br />
             성공적으로 변경되었습니다.
           </>

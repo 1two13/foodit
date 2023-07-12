@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
+import styled from 'styled-components';
 
 import SearchedOutput from './SearchedOutput';
-// TODO: 임시 API로 추후 수정 예정
 import { LoadingContents } from './loading/LoadingContents';
-import { ERROR_ALERT_MESSAGE, TIMEOUT } from '../../static/constants';
-import searchApi from '../../api/searchApi';
 import useThrottle from '../../hooks/useThrottle';
-import styled from 'styled-components';
+import searchApi from '../../api/searchApi';
+
+import { ERROR_ALERT_MESSAGE, TIMEOUT } from '../../static/constants';
 import totalGray from '../../images/totalGray.png';
 import fruitGray from '../../images/fruitGray.png';
 import vegetableGray from '../../images/vegetableGray.png';
@@ -90,7 +90,6 @@ function SearchedOutputList({
       },
       onError: (error) => {
         setIsLoading(false);
-
         console.warn('fail to search post.', error);
         alert(ERROR_ALERT_MESSAGE);
       },

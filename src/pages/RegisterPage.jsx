@@ -2,9 +2,11 @@ import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
+
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import IdPasswordForm from '../components/common/IdPasswordForm';
+
 import { setUserInfo } from '../redux/slices/authSlice';
 import {
   resetFields,
@@ -113,8 +115,8 @@ const RegisterPage = () => {
   // 유효성검사 확인 후 폼제출
   const handleSubmit = (event) => {
     event.preventDefault();
-    const validationErrors = {};
 
+    const validationErrors = {};
     inputFields.forEach((field) => {
       if (field.id === 'email' && email.trim() === '') {
         validationErrors[field.id] = { message: `${field.label}를 입력해주세요.`, isError: true };
@@ -134,12 +136,8 @@ const RegisterPage = () => {
     });
 
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
-
     dispatch(setErrors(validationErrors));
-
-    if (isFormValid) {
-      callSaveUserInfo();
-    }
+    if (isFormValid) callSaveUserInfo();
   };
 
   // 에러메세지 초기값 보여주기

@@ -2,21 +2,22 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
+
 import Input from '../components/common/Input';
 import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
+import Loading from '../components/common/loading/Loading';
+
 import { setError, setPassword, setUsername } from '../redux/slices/signinSlice';
 import { loginFailure, loginStart, loginSuccess } from '../redux/slices/authSlice';
-import Loading from '../components/common/loading/Loading';
 import { signInAPI } from '../redux/api/authApi';
 
 const SignInPage = () => {
-  const { user } = useSelector((state) => state.auth);
-  const { username, password, error } = useSelector((state) => state.signin);
-  const { isLoading } = useSelector((state) => state.auth);
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user, isLoading } = useSelector((state) => state.auth);
+  const { username, password, error } = useSelector((state) => state.signin);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   useEffect(() => {
     if (user?.id) navigate('/');

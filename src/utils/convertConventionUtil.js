@@ -40,7 +40,4 @@ function snakeToCamelCase(obj) {
   return camelObj;
 }
 
-export default {
-  camelToSnakeCase,
-  snakeToCamelCase,
-};
+export default { camelToSnakeCase, snakeToCamelCase };

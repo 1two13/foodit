@@ -8,10 +8,9 @@ const SplashScreenPage = () => {
     const moveToWalkthrough = setTimeout(() => {
       if (window.localStorage.getItem('walkthrough')) {
         navigate('/signin', { state: { before: '/' } });
-      } else {
-        navigate('/walkthrough');
-      }
+      } else navigate('/walkthrough');
     }, 1500);
+
     return () => clearTimeout(moveToWalkthrough);
   }, [navigate]);
 

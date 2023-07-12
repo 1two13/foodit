@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
+import { useSearchParams } from 'react-router-dom';
 
 import SearchBar from '../components/common/navBar/SearchBar';
 import SearchedOutputList from '../components/common/SearchedOutputList';
 import TabBar from '../components/common/navBar/TabBar';
 
 import { ENTER_INPUT } from '../static/constants';
-import { useSearchParams } from 'react-router-dom';
 
 // TODO: 하드코딩되어 있는 값들 모두 수정 필요
 function SearchPage() {
@@ -16,13 +16,11 @@ function SearchPage() {
   ];
 
   const [searchParams, setSearchParams] = useSearchParams();
-
   const selectedCategory = searchParams.get('category') ?? '전체';
   const [keyword, setKeyword] = useState(searchParams.get('keyword') ?? '');
   const [selectedOption, setSelectedOption] = useState(
     options.find((option) => option.value === searchParams.get('orderBy')) ?? options[0],
   );
-
   const [reload, setReload] = useState(false);
 
   const onChangeKeyword = (event) => setKeyword(event.target.value);

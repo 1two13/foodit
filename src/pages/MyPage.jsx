@@ -28,7 +28,7 @@ function MyPage() {
   };
 
   return (
-    <div className="mt-[47px]">
+    <div className="top-bar mt-[47px]">
       <div className="flex flex-col justify-center items-center">
         <div className="text-[16px] font-medium">{MY_PAGE}</div>
         <MyProfile

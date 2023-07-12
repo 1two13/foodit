@@ -51,7 +51,6 @@ const authSlice = createSlice({
     },
     /** 회원가입 정보 로컬스토리지 저장 */
     setUserInfo(state, action) {
-      console.log(action);
       saveUserInfo(action.payload);
       state.error = null;
     },

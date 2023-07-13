@@ -2,7 +2,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "${REACT_APP_API_URL}/$1"
+      "dest": "${REACT_APP_API_URL_TEST}/$1"
     }
   ]
 }

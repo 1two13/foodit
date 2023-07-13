@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Show = styled.div`
+export const Show = styled.div`
   /* 스크롤바 숨기기 */
-  overflow-x: auto;
-  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
 
@@ -22,6 +20,7 @@ const Show = styled.div`
 `;
 
 function ShowCase({ contents }) {
-  return <Show className="w-full h-[668px] px-[15px] overflow-hidden">{contents}</Show>;
+  return <Show className="w-full flex-1 px-[15px] overflow-hidden flex flex-col">{contents}</Show>;
 }
+
 export default ShowCase;

@@ -5,11 +5,11 @@ const HomeBar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-between items-center w-full mt-[47px]">
+    <div className="top-bar flex justify-between items-center w-full mt-[47px]">
       {/* 로고 */}
       <div className="top ml-[15px]">
         <svg width="92" height="23" viewBox="0 0 92 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0_410_1589)">
+          <g clipPath="url(#clip0_410_1589)">
             <path
               d="M0 3.80053C0 2.28935 1.21238 1.06445 2.70813 1.06445H17.9359C19.4316 1.06445 20.644 2.28935 20.644 3.80053C20.644 5.31172 19.4316 6.53662 17.9359 6.53662H2.70813C1.21238 6.53662 0 5.31172 0 3.80053Z"
               fill="#39B54A"

@@ -1,31 +1,30 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import OptionalPermission from '../components/permissionPage/OptionalPermission';
 import LongButton from '../components/common/LongButton';
 
 import {
-  PERMISSION_FIRST_TITLE,
-  PERMISSION_SECOND_TITLE,
-  SELECT_PERMISSION,
-  NOTIFICATION,
-  NOTIFICATION_DESCRIPTION,
-  LOCATION,
-  LOCATION_DESCRIPTION,
   CAMERA,
   CAMERA_DESCRIPTION,
+  CONFIRM,
+  LOCATION,
+  LOCATION_DESCRIPTION,
   MIKE,
   MIKE_DESCRIPTION,
+  NOTIFICATION,
+  NOTIFICATION_DESCRIPTION,
+  PERMISSION_FIRST_TITLE,
+  PERMISSION_MESSAGE,
+  PERMISSION_SECOND_TITLE,
+  SELECT_PERMISSION,
   STORAGE,
   STORAGE_DESCRIPTION,
-  PERMISSION_MESSAGE,
-  CONFIRM,
 } from '../static/constants';
 
 function PermissionPage() {
   const navigate = useNavigate();
-  const handleConfirm = () => {
-    navigate('/register-location');
-  };
+  const handleConfirm = () => navigate('/register-location', { state: { before: '/permission' } });
 
   return (
     <div className="pt-[136px] relative">

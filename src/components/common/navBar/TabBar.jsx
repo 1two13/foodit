@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { writingSlice } from '../../../redux/slices/writingSlice.js';
 
 const TabBar = () => {
   const [activeTab, setActiveTab] = useState('TabHome');
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const changeTab = (tabId) => {
     let path = '/';
 
     if (tabId === 'TabCategories') path = '/category';
-    else if (tabId === 'TabAddPost') path = '/writing';
-    else if (tabId === 'TabChat') path = '/chatlist';
+    else if (tabId === 'TabAddPost') {
+      path = '/writing';
+      dispatch(writingSlice.actions.setImageUrl(null));
+    } else if (tabId === 'TabChat') path = '/chatlist';
     else if (tabId === 'TabMyPage') path = '/myPage';
 
-    navigate(path);
+    navigate(path, { state: { before: location.pathname } });
   };
 
   useEffect(() => {
@@ -132,7 +138,7 @@ const TabBar = () => {
   ];
 
   return (
-    <div className="fixed px-[15px] bottom-0 z-50 h-[85px] w-full border-t-[0.5px] border-solid border-[#A4A4A4]">
+    <div className="fixed bg-white px-[15px] bottom-0 z-50 h-[85px] w-full border-t-[0.5px] border-solid border-[#A4A4A4] max-width">
       <ul className="flex justify-between">
         {Tabs.map((tab) => (
           <li

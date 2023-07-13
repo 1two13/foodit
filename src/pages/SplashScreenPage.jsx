@@ -6,8 +6,11 @@ const SplashScreenPage = () => {
 
   useEffect(() => {
     const moveToWalkthrough = setTimeout(() => {
-      navigate('/walkthrough');
+      if (window.localStorage.getItem('walkthrough')) {
+        navigate('/signin', { state: { before: '/' } });
+      } else navigate('/walkthrough');
     }, 1500);
+
     return () => clearTimeout(moveToWalkthrough);
   }, [navigate]);
 
@@ -25,7 +28,7 @@ const SplashScreenPage = () => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g clip-path="url(#clip0_265_2633)">
+          <g clipPath="url(#clip0_265_2633)">
             <path
               d="M46.9853 60.0092V77.602H30.1684V60.0092H6.9234C4.45048 60.0092 2.67899 59.3247 1.60701 57.954C0.535041 56.5852 0 55.0505 0 53.3498C0 52.5278 0.122889 51.7208 0.370559 50.9252C0.618228 50.1314 1.01525 49.4036 1.56542 48.7475C2.1137 48.0895 2.82835 47.5691 3.70937 47.1864C4.5885 46.8036 5.65858 46.6113 6.9234 46.6113H70.2322C71.4951 46.6113 72.5671 46.8036 73.4462 47.1864C74.3254 47.571 75.04 48.0895 75.5902 48.7475C76.1384 49.4055 76.5374 50.1314 76.785 50.9252C77.0327 51.7208 77.1556 52.5278 77.1556 53.3498C77.1556 55.0486 76.6205 56.5833 75.5486 57.954C74.4766 59.3247 72.7051 60.0092 70.2322 60.0092H46.9872H46.9853Z"
               fill="#42210B"
@@ -78,10 +81,8 @@ const SplashScreenPage = () => {
           </defs>
         </svg>
       </div>
-      <div id="logo" className="w-full h-full flex justify-center items-center">
-        <div className="fixed bottom-0">
-          <img src={process.env.PUBLIC_URL + '/images/splash.png'} alt="Splash" />
-        </div>
+      <div className="fixed bottom-0">
+        <img src={process.env.PUBLIC_URL + '/images/splash.png'} alt="Splash" />
       </div>
     </div>
   );

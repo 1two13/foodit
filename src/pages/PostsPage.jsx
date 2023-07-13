@@ -1,33 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 import BackButton from '../components/common/navBar/BackButton';
 import FriendsProfile from '../components/common/FriendsProfile';
-import { friendsSlice } from '../redux/slices/friendsSlice';
+import { LoadingContents } from '../components/common/loading/LoadingContents';
+import postApi from '../api/postApi';
 
-import { JOIN_ALERT, CONFIRM, CANCEL, SUM, WON, DIVISION, ACTUAL_PAYMENT_AMOUNT, JOIN } from '../static/constants';
+import totalGray from '../images/totalGray.png';
+import aquaticGray from '../images/aquaticGray.png';
+import breadGray from '../images/breadGray.png';
+import ecoGray from '../images/ecoGray.png';
+import fruitGray from '../images/fruitGray.png';
+import kimchiGray from '../images/kimchiGray.png';
+import meatGray from '../images/meatGray.png';
+import milkGray from '../images/milkGray.png';
+import waterGray from '../images/waterGray.png';
+import noodlesGray from '../images/noodlesGray.png';
+import riceGray from '../images/riceGray.png';
+import seasoningGray from '../images/seasoningGray.png';
+import snackGray from '../images/snackGray.png';
+import vegetableGray from '../images/vegetableGray.png';
+import coffeeGray from '../images/coffeeGray.png';
+
+import { ACTUAL_PAYMENT_AMOUNT, CANCEL, CONFIRM, DIVISION, JOIN, JOIN_ALERT, SUM, WON } from '../static/constants';
 
 function PostsPage() {
-  const dispatch = useDispatch();
+  const categoryList = [
+    { key: '전체', image: totalGray },
+    { key: '과일', image: fruitGray },
+    { key: '채소', image: vegetableGray },
+    { key: '쌀/잡곡/견과', image: riceGray },
+    { key: '정육/계란류', image: meatGray },
+    { key: '수산물/건해산', image: aquaticGray },
+    { key: '우유/유제품', image: milkGray },
+    { key: '김치/반찬/델리', image: kimchiGray },
+    { key: '생수/음료/주류', image: waterGray },
+    { key: '커피/차/원두', image: coffeeGray },
+    { key: '면류/통조림', image: noodlesGray },
+    { key: '양념/오일', image: seasoningGray },
+    { key: '과자/간식', image: snackGray },
+    { key: '베이커리/잼', image: breadGray },
+    { key: '친환경/유기농', image: ecoGray },
+  ];
 
-  const imageUrl = JSON.parse(localStorage.getItem('imageUrl'));
-  const title = JSON.parse(localStorage.getItem('title'));
-  const category = JSON.parse(localStorage.getItem('category'));
-  const totalAmount = JSON.parse(localStorage.getItem('totalAmount'));
-  const maxPeople = JSON.parse(localStorage.getItem('maxPeople'));
-  const textarea = JSON.parse(localStorage.getItem('textarea'));
-  const divisionAmount = (totalAmount / (maxPeople + 1)).toLocaleString();
+  const postId = useParams().postId;
+  const navigate = useNavigate();
 
-  let friendsList = useSelector((state) => state.friends.friendsList);
-  friendsList = friendsList.map((el, idx) => (idx < maxPeople ? (el = true) : (el = false)));
-  let recruteList = useSelector((state) => state.friends.recruteList);
-  recruteList = friendsList.map((el) => (el ? (el = '모집대기중') : ''));
+  const { user } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    dispatch(friendsSlice.actions.setFriendsList(friendsList));
-    dispatch(friendsSlice.actions.setRecruteList(recruteList));
-  }, []);
+  const {
+    isLoading,
+    data: post,
+    refetch,
+  } = useQuery('post', () => postApi.getPost(postId), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+
+  if (isLoading) {
+    return <LoadingContents />;
+  }
+
+  const maxPeople = post.limit;
+  const imageUrl = post.imageUrl;
+  const title = post.title;
+  const category = categoryList[post.categoryId];
+  const totalAmount = post.count;
+  const textarea = post.content;
+  const divisionAmount = (totalAmount / maxPeople).toLocaleString();
+  const friendsList = post.participants;
+  const isJoin = !!friendsList.find((friend) => friend.id === user?.id);
 
   const joinAsMember = () => {
     Swal.fire({
@@ -38,46 +83,41 @@ function PostsPage() {
       confirmButtonText: CONFIRM,
       cancelButtonText: CANCEL,
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.setItem('isJoin', true);
-        localStorage.setItem('recruteList', JSON.stringify(recruteList));
+    }).then(async (result) => {
+      if (!user?.id) {
+        navigate('/signin');
+        return;
+      }
 
-        const index = recruteList.findIndex((item) => item === '모집대기중');
-
-        if (index !== -1) {
-          recruteList[index] = '파티원';
-          localStorage.setItem('recruteList', JSON.stringify(recruteList));
-
-          let test = JSON.parse(localStorage.getItem('recruteList'));
-          dispatch(friendsSlice.actions.setRecruteList(test));
-        }
+      if (result.isConfirmed && !isJoin) {
+        await postApi.joinPost(postId, user.token);
+        refetch();
       }
     });
   };
 
-  let isJoin = JSON.parse(localStorage.getItem('isJoin'));
+  const clearData = () => navigate('/');
 
   return (
     <div className="">
       <div className="w-[100%] mt-[47px]">
-        <BackButton />
+        <BackButton onClickHandler={clearData} />
       </div>
 
       <div className="flex justify-center">
         <img
           alt=""
-          src={imageUrl}
+          src={imageUrl ? imageUrl : category.image}
           className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />
       </div>
 
       <div className="overflow-scroll h-[400px]">
         <div className="mx-[15px]">
-          <FriendsProfile />
+          <FriendsProfile friendsList={friendsList} maxPeople={maxPeople} />
         </div>
         <div className="mt-[15px] mx-[15px] mb-[3px] text-[16px] font-semibold">{title}</div>
-        <div className="mx-[15px] text-[10px] text-smokeGray">{category}</div>
+        <div className="mx-[15px] text-[10px] text-smokeGray">{category.key}</div>
         <div className="pt-[34px] mb-[26px] mx-[15px] text-[13px]">{textarea}</div>
 
         <div className="w-[360px] h-[200px] p-[14px] mx-[15px] mb-[93px] rounded-[10px] bg-hexGray">
@@ -97,18 +137,18 @@ function PostsPage() {
           </div>
 
           <div className="flex justify-between px-[13px] pt-[10px] text-[13px] font-medium">
-            <div>{`내 1/${maxPeople + 1} 부담금`}</div>
+            <div>{`내 1/${maxPeople} 부담금`}</div>
             <div>{`${divisionAmount}${WON}`}</div>
           </div>
 
           <div className="flex justify-between px-[13px] pt-[10px] text-[13px] font-medium">
-            <div>{`파티원 ${maxPeople}명의 몫`}</div>
+            <div>{`파티원 ${maxPeople - 1}명의 몫`}</div>
             <div>{`${(totalAmount - totalAmount / maxPeople).toLocaleString()}${WON}`}</div>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between w-[100%] h-[107px] px-[15px] pt-[18px] fixed bottom-0 border-t-[0.2px] border-gray bg-white">
+      <div className="flex justify-between w-[390px] h-[107px] px-[15px] pt-[18px] fixed bottom-0 border-t-[0.2px] border-gray bg-white">
         <div className="flex flex-col h-[50px]">
           <div className="text-[10px] text-smokeGray">{`${SUM} ${totalAmount.toLocaleString()}${WON}`}</div>
           <div className="font-bold text-[16px] text-mainColor">{`${ACTUAL_PAYMENT_AMOUNT} ${divisionAmount}${WON}`}</div>

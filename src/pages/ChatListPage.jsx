@@ -2,99 +2,99 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabBar from '../components/common/navBar/TabBar';
 import TextBar from '../components/common/navBar/TextBar';
-import ShowCase from '../components/common/ShowCase';
+import { Show } from '../components/common/ShowCase';
 
 const ChatListPage = () => {
   const chatData = [
     {
       id: 1,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '다크 초코씨솔트 프로틴 바 같이 사실 분~?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
+      timestamp: '오후 12:20',
       unread: 10,
     },
     {
       id: 2,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '우리마트에서 바나나 같이사요',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 1,
     },
     {
       id: 3,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '네고왕에서 네고한 냉면 나눠살래요?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 12,
     },
     {
       id: 4,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '강아지 사료 대용량 나눕시다!',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 0,
     },
     {
       id: 5,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '텀블러 2+1이던데... 하나씩 살래요?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 3,
     },
     {
       id: 6,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '가평 빠지 성인1+1 같이 가실 분?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 11,
     },
     {
       id: 7,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '수박이 너무 커요 반띵하실?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 0,
     },
     {
       id: 8,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '같이 코스트코 가서 쉐어할 사람?',
       people: 5,
       message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      timestamp: '오후 12:20',
+      unread: 44,
     },
     {
       id: 9,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '고추장 매니아가 전합니다.',
       people: 5,
-      message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      message: '고추장 1+1인데 나누실래요?',
+      timestamp: '오후 12:20',
+      unread: 1,
     },
     {
       id: 10,
       photo: '',
-      title: '프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트 프로틴 바/ 다크 초코씨솔트',
+      title: '우울할때는 고기앞으로',
       people: 5,
-      message: 'TODO님, 근처에서 다양한 물품들이 매일 올',
-      timestamp: '2023년06월25일 12:20',
-      unread: 10,
+      message: '이마트에서 행사하네요 고기사러',
+      timestamp: '오후 12:20',
+      unread: 0,
     },
   ];
   const lastChat = chatData[chatData.length - 1]; // 마지막 채팅 데이터 가져오기
@@ -103,14 +103,16 @@ const ChatListPage = () => {
 
   const navigate = useNavigate();
   const handleOpenChat = () => {
-    navigate('/chat');
+    // navigate('/chat');
+    alert('채팅기능 구현 후 업데이트 예정입니다.');
+    console.log('채팅기능 구현 후 업데이트 예정입니다.');
   };
 
   return (
-    <>
+    <div className="flex flex-col max-height">
       <TextBar title={'채팅'} />
-      <ShowCase
-        contents={
+      <Show className="w-full flex-1 px-[15px] overflow-scroll">
+        {
           <div className="">
             {/* 채팅리스트가 없을 때 */}
             {!chatData && (
@@ -144,8 +146,8 @@ const ChatListPage = () => {
                 {chatData.map((chat) => (
                   <li key={chat.id} className="w-full cursor-pointer" onClick={handleOpenChat}>
                     <div className="relative flex h-[60px]">
-                      <div className="w-[44px] h-[44px] rounded-full bg-gray mr-[12px]">
-                        <img src={chat.photo} alt="Product" className="w-full" />
+                      <div className="w-[44px] h-[44px] rounded-full bg-mainColor mr-[12px]">
+                        {/* <img src={chat.photo} alt="Product" className="w-full" /> */}
                       </div>
                       <div>
                         <div className="flex leading-[17px] ">
@@ -159,9 +161,9 @@ const ChatListPage = () => {
                         </p>
                       </div>
                       <div className="absolute top-0 right-[14px] w-[56px] flex flex-wrap justify-end">
-                        <p className="text-[10px] text-gray leading-[15px] text-right mb-[10px]">{formattedTime}</p>
+                        <p className="text-[10px] text-gray leading-[15px] text-right mb-[10px]">{chat.timestamp}</p>
                         <div className="w-[20px] h-[20] rounded-full bg-[#EE0707] text-center text-white text-[13px]">
-                          <p>{chat.unread}</p>
+                          <p>{chat.unread !== 0 ? chat.unread : ''}</p>
                         </div>
                       </div>
                     </div>
@@ -172,9 +174,9 @@ const ChatListPage = () => {
             </div>
           </div>
         }
-      />
+      </Show>
       <TabBar />
-    </>
+    </div>
   );
 };
 

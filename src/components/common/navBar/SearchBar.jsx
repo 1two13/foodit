@@ -1,19 +1,18 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import BackButton from './BackButton';
 
-function SearchBar({ placeholder }) {
-  const navigate = useNavigate();
-
+function SearchBar({ placeholder, onChange, onSubmit, keyword }) {
   return (
-    <div className="flex h-[44px] mt-[47px]">
+    <form className="top-bar flex h-[44px] mt-[47px]" onSubmit={onSubmit}>
       <BackButton />
       <input
         placeholder={placeholder}
         className="w-[100%] mr-[15px] px-[27px] rounded-[5px] bg-[#F0F0F0] placeholder-gray text-[13px] outline-mainColor"
+        onChange={onChange}
+        value={keyword}
       />
-    </div>
+    </form>
   );
 }
 

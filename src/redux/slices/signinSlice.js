@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const signinSlice = createSlice({
-  name: 'signip',
+  name: 'signin',
   initialState,
   reducers: {
     setUsername: (state, action) => {
@@ -19,10 +19,10 @@ const signinSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
-    resetFields: (state, action) => {
+    resetFields: (state) => {
       state.username = '';
       state.password = '';
-      state.errors = '';
+      state.error = '';
     },
   },
 });

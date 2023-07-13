@@ -1,20 +1,22 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
+
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import LongButton from '../components/common/LongButton';
 import IdPasswordForm from '../components/common/IdPasswordForm';
-import { signupFailure, signupStart, signupSuccess } from '../redux/slices/authSlice';
+
+import { setUserInfo } from '../redux/slices/authSlice';
 import {
+  resetFields,
   setEmail,
+  setErrors,
+  setNickname,
   setPassword,
   setPasswordCheck,
-  setNickname,
-  setErrors,
-  resetFields,
 } from '../redux/slices/registerSlice';
-import { checkEmail } from '../redux/api/authApi';
+import { checkEmailAPI } from '../redux/api/authApi';
 
 const RegisterPage = () => {
   const inputFields = [
@@ -35,23 +37,22 @@ const RegisterPage = () => {
   // 회원가입 API 호출
   const callSaveUserInfo = () => {
     try {
-      dispatch(signupStart());
-      dispatch(signupSuccess({ email, password, nickname }));
+      dispatch(setUserInfo({ username: email, password, nickname }));
       dispatch(resetFields());
       navigate(`/permission`);
     } catch (error) {
-      dispatch(signupFailure(error.message));
+      console.error('회원가입 정보 전송 오류 :', error);
     }
   };
 
   // 사용자 이메일 체크
   const handleCheckEmail = async (value) => {
     try {
-      const result = await checkEmail(value);
-      return result === null;
+      const result = await checkEmailAPI({ username: value });
+      return result === false;
     } catch (error) {
       console.error('사용자 이메일 체크 오류 :', error);
-      return false;
+      return true;
     }
   };
 
@@ -59,7 +60,7 @@ const RegisterPage = () => {
   const validateField = useCallback(
     debounce(async (name, value) => {
       const validationErrors = { ...errors };
-      console.log(name, value);
+
       if (name === 'email') {
         dispatch(setEmail(value));
         const isValidEmail = emailRegex.test(value);
@@ -114,8 +115,8 @@ const RegisterPage = () => {
   // 유효성검사 확인 후 폼제출
   const handleSubmit = (event) => {
     event.preventDefault();
-    const validationErrors = {};
 
+    const validationErrors = {};
     inputFields.forEach((field) => {
       if (field.id === 'email' && email.trim() === '') {
         validationErrors[field.id] = { message: `${field.label}를 입력해주세요.`, isError: true };
@@ -135,12 +136,8 @@ const RegisterPage = () => {
     });
 
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
-
     dispatch(setErrors(validationErrors));
-
-    if (isFormValid) {
-      callSaveUserInfo();
-    }
+    if (isFormValid) callSaveUserInfo();
   };
 
   // 에러메세지 초기값 보여주기

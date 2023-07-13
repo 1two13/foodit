@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { signInAPI, logoutAPI } from '../api/authApi';
 import { saveUserInfo } from '../api/authApi';
+import { getUserInfoAPI } from '../api/userInfoUpdateAPI';
 
 const initialState = {
   user: {
+    token: localStorage.getItem('token') ?? '',
     id: '',
     username: '',
     password: '',
@@ -18,17 +19,20 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setNickname(state, action) {
+      state.user = { ...state.user, nickname: action.payload };
+    },
     loginStart(state) {
       state.isLoading = true;
       state.error = null;
     },
     loginSuccess(state, action) {
       state.isLoading = false;
-      state.user = action.payload;
-      signInAPI(state.user);
+      state.user = { ...state.user, ...action.payload };
       state.error = null;
     },
     loginFailure(state, action) {
+      state.user = { ...state.user, token: '' };
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -37,28 +41,35 @@ const authSlice = createSlice({
       state.error = null;
     },
     logoutSuccess: (state) => {
+      state.user = { ...initialState.user, token: '' };
       state.isLoading = false;
-      logoutAPI();
       state.error = null;
     },
     logoutFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
-    signupStart(state) {
-      state.isLoading = true;
+    /** 회원가입 정보 로컬스토리지 저장 */
+    setUserInfo(state, action) {
+      saveUserInfo(action.payload);
       state.error = null;
     },
-    signupSuccess(state, action) {
-      state.isLoading = false;
-      state.user = action.payload;
-      saveUserInfo(state.user);
-      state.error = null;
-    },
-    signupFailure(state, action) {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+  },
+  /** 로그인 한 사용자 정보 받아오기 */
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUserInfoAPI.pending, (state) => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(getUserInfoAPI.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user.username = action.payload.username;
+      })
+      .addCase(getUserInfoAPI.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 
@@ -69,9 +80,8 @@ export const {
   logoutStart,
   logoutSuccess,
   logoutFailure,
-  signupStart,
-  signupSuccess,
-  signupFailure,
+  setUserInfo,
+  setNickname,
 } = authSlice.actions;
 
 export default authSlice.reducer;

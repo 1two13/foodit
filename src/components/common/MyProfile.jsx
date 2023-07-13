@@ -1,21 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { FcCheckmark } from 'react-icons/fc';
+import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
-import {
-  setErrors,
-  setNewNickname,
-  updateNicknameFailure,
-  updateNicknameStart,
-  updateNicknameSuccess,
-} from '../../redux/slices/userInfoChangeSlice';
+
+import { setErrors, setNewNickname } from '../../redux/slices/userInfoChangeSlice';
+import { updateNicknameAPI } from '../../redux/api/userInfoUpdateAPI';
+import { setNickname } from '../../redux/slices/authSlice';
+import { FcCheckmark } from 'react-icons/fc';
 
 function MyProfile({ cameraSvg = '', writingSvg }) {
   const [isEditing, setIsEditing] = useState(false);
   const { newNickname, errors } = useSelector((state) => state.userInfoChange);
+  const { user } = useSelector((state) => state.auth);
+  const nickname = user.nickname;
 
-  /** TODO: 서버에서 가져온 데이터로 추후 변경 */
-  const nickname = localStorage.getItem('signup-nickname');
   const inputRef = useRef();
   const dispatch = useDispatch();
 
@@ -36,15 +33,10 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
   };
 
   /** 닉네임 변경 시도 */
-  const updateNickname = useCallback(async () => {
+  const handleUpdateNickname = useCallback(() => {
     isUpdateMode();
-
-    try {
-      dispatch(updateNicknameStart());
-      await dispatch(updateNicknameSuccess({ newNickname }));
-    } catch (error) {
-      dispatch(updateNicknameFailure(error.message));
-    }
+    dispatch(updateNicknameAPI({ token: user.token, nickname: newNickname }));
+    dispatch(setNickname(newNickname));
   }, [dispatch, newNickname]);
 
   /** 닉네임 유효성 검사 */
@@ -80,7 +72,7 @@ function MyProfile({ cameraSvg = '', writingSvg }) {
         </div>
         <button
           className="text-[20px] float-right mt-[10px] absolute top-[21px] right-[4%]"
-          onClick={() => updateNickname()}
+          onClick={() => handleUpdateNickname()}
         >
           {isEditing ? <FcCheckmark /> : writingSvg}
         </button>

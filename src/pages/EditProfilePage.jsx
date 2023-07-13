@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 
@@ -8,16 +8,10 @@ import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import IdPasswordForm from '../components/common/IdPasswordForm';
 
-import { EDIT, CHANGE_INFO } from '../static/constants';
-import {
-  resetFields,
-  setErrors,
-  setNewPassword,
-  setNewPasswordCheck,
-  updatePasswordFailure,
-  updatePasswordStart,
-  updatePasswordSuccess,
-} from '../redux/slices/userInfoChangeSlice';
+import { resetFields } from '../redux/slices/signinSlice';
+import { setErrors, setNewPassword, setNewPasswordCheck } from '../redux/slices/userInfoChangeSlice';
+import { updatePasswordAPI } from '../redux/api/userInfoUpdateAPI';
+import { CHANGE_INFO, EDIT } from '../static/constants';
 
 function EditProfilePage() {
   const inputFields = [
@@ -26,12 +20,11 @@ function EditProfilePage() {
     { id: 'newPasswordCheck', label: '비밀번호 재확인', type: 'password' },
   ];
   const { newPassword, newPasswordCheck, errors } = useSelector((state) => state.userInfoChange);
+  const { user } = useSelector((state) => state.auth);
 
+  const username = user.username;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // TODO: 서버에서 가져온 데이터로 추후 변경
-  const email = localStorage.getItem('signup-email');
 
   // 유효성 검사
   const validateField = useCallback(
@@ -63,19 +56,11 @@ function EditProfilePage() {
   );
 
   /** 비밀번호 변경 */
-  const updatePassword = () => {
-    return async (dispatch) => {
-      try {
-        dispatch(updatePasswordStart());
-        await dispatch(updatePasswordSuccess({ newPassword }));
-        alert('비밀번호 변경이 완료되었습니다.');
-        dispatch(resetFields());
-        navigate('/myPage');
-      } catch (error) {
-        dispatch(updatePasswordFailure(error.message));
-      }
-    };
-  };
+  const handleUpdatePassword = useCallback(() => {
+    dispatch(updatePasswordAPI({ token: user.token, password: newPassword }));
+    dispatch(resetFields());
+    navigate('/myPage');
+  }, [dispatch, newPassword]);
 
   /** 유효성검사 확인 후 폼제출 */
   const handleSubmit = (event) => {
@@ -92,35 +77,36 @@ function EditProfilePage() {
     const isFormValid = Object.values(validationErrors).every((error) => !error.isError);
 
     if (isFormValid) {
-      dispatch(updatePassword());
-      console.log('클릭');
+      handleUpdatePassword();
     }
   };
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <TextAndBackBar title={CHANGE_INFO} />
-      <MyProfile />
+      <div className="flex-1 overflow-scroll">
+        <MyProfile />
 
-      <form className="flex flex-wrap justify-center">
-        <div className="flex flex-wrap w-[360px]">
-          {inputFields.slice(0, 3).map((field) => (
-            <React.Fragment key={field.id}>
-              <IdPasswordForm
-                key={field.id}
-                label={field.label}
-                type={field.type}
-                value={field.id === 'email' ? email : null}
-                color={errors[field.id] && errors[field.id].isError ? '#ff0000' : '#d9d9d9'}
-                onChange={(event) => validateField(field.id, event.target.value)}
-                errors={errors[field.id] && errors[field.id].isError ? errors[field.id] : ''}
-                readOnly={field.id === 'email' ? 'readOnly' : ''}
-              />
-            </React.Fragment>
-          ))}
-        </div>
-      </form>
-      <LongButton contents={EDIT} onClick={handleSubmit} />
+        <form className="flex flex-wrap justify-center">
+          <div className="flex flex-wrap w-[360px]">
+            {inputFields.slice(0, 3).map((field) => (
+              <React.Fragment key={field.id}>
+                <IdPasswordForm
+                  key={field.id}
+                  label={field.label}
+                  type={field.type}
+                  value={field.id === 'email' ? username : null}
+                  color={errors[field.id] && errors[field.id].isError ? '#ff0000' : '#d9d9d9'}
+                  onChange={(event) => validateField(field.id, event.target.value)}
+                  errors={errors[field.id] && errors[field.id].isError ? errors[field.id] : ''}
+                  readOnly={field.id === 'email' ? 'readOnly' : ''}
+                />
+              </React.Fragment>
+            ))}
+          </div>
+        </form>
+        <LongButton contents={EDIT} onClick={handleSubmit} />
+      </div>
     </div>
   );
 }

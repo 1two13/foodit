@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import ImageAndMessage from '../components/common/ImageAndMessage';
 import LongButton from '../components/common/LongButton';
 import TextBar from '../components/common/navBar/TextAndBackBar';
@@ -9,6 +10,7 @@ const RegisterCompletePage = () => {
 
   const handleMoveSignIn = () => {
     navigate(`/signin`);
+    localStorage.removeItem('signup-username');
     localStorage.removeItem('signup-nickname');
     localStorage.removeItem('signup-password');
     localStorage.removeItem('registeredLocation');
@@ -21,11 +23,11 @@ const RegisterCompletePage = () => {
       <ImageAndMessage
         marginTop={'26px'}
         color={'#39B54A'}
-        src={process.env.PUBLIC_URL + '/images/walkthrough.gif'}
+        src={process.env.PUBLIC_URL + '/images/signup-success.gif'}
         mainMessage={'회원가입 완료'}
         subMessage={
           <>
-            {/* data 받아와서 user.name 넣어주기 */}'{nickname}' 님의 회원가입이
+            '{nickname}' 님의 회원가입이
             <br />
             성공적으로 완료되었습니다.
           </>

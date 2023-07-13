@@ -13,7 +13,8 @@
 ## 핵심 기능
 <img width="500" alt="image" src="https://github.com/1two13/foodit/assets/88531407/900a8907-fd70-40a9-abe3-3973b578568d">
 <img width="500" alt="image" src="https://github.com/1two13/foodit/assets/88531407/06649b78-3a28-4da9-b1b1-8d9351edbc31">
-<img width="500" alt="image" src="https://github.com/1two13/foodit/assets/88531407/598d5765-8c86-49fd-b84b-12b60777edb7">
+<img width="500" alt="image" src="https://github.com/1two13/foodit/assets/88531407/02d2837c-5e9b-45aa-846c-8683ebc8ca30">
+<img width="500" alt="image" src="https://github.com/1two13/foodit/assets/88531407/f5d81b1b-c33e-4e37-bbff-62ab4f75dcf4">
 <img width="500" alt="image" src="https://github.com/1two13/foodit/assets/88531407/9efa4eb3-2e54-453c-a77d-7cb727a029c5">
 
 ## 구현한 기능 및 페이지

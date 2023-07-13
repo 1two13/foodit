@@ -156,9 +156,9 @@ function PostsPage() {
         <button
           onClick={joinAsMember}
           className={`w-[133px] h-[36px] rounded-[5px] text-white text-[13px] ${
-            isJoin ? 'bg-smokeGray' : 'bg-mainColor'
+            isJoin || friendsList.length >= maxPeople ? 'bg-smokeGray' : 'bg-mainColor'
           }`}
-          disabled={isJoin}
+          disabled={isJoin || friendsList.length >= maxPeople}
         >
           {JOIN}
         </button>

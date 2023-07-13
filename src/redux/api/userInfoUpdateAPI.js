@@ -10,9 +10,9 @@ export const UserInfoUpdate = async ({ newPassword, newNickname }) => {
   const encryptedPassword = CryptoJS.AES.encrypt(newPassword, encryptionKey).toString();
 
   try {
-    // TODO: 서버에 저장된 유저정보로 변경하기
     const storedPassword = localStorage.getItem('password');
     const storedNickname = localStorage.getItem('nickname');
+    console.log(storedPassword, storedNickname);
 
     // 새로운 값을 로컬 스토리지에 비동기적으로 저장하기
     if (newPassword !== undefined) {
@@ -55,6 +55,7 @@ export const updatePasswordAPI = createAsyncThunk(
           },
         },
       );
+
       return response.status;
     } catch (error) {
       return rejectWithValue(error.message);

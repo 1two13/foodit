@@ -8,10 +8,10 @@ import LongButton from '../components/common/LongButton';
 import TextAndBackBar from '../components/common/navBar/TextAndBackBar';
 import IdPasswordForm from '../components/common/IdPasswordForm';
 
-import { CHANGE_INFO, EDIT } from '../static/constants';
+import { resetFields } from '../redux/slices/signinSlice';
 import { setErrors, setNewPassword, setNewPasswordCheck } from '../redux/slices/userInfoChangeSlice';
 import { updatePasswordAPI } from '../redux/api/userInfoUpdateAPI';
-import { resetFields } from '../redux/slices/signinSlice';
+import { CHANGE_INFO, EDIT } from '../static/constants';
 
 function EditProfilePage() {
   const inputFields = [

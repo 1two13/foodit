@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import Carousel from '../components/common/Carousel';
 import ImageAndMessage from '../components/common/ImageAndMessage';
 import LongButton from '../components/common/LongButton';

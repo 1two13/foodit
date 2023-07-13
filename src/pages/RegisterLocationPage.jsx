@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
 
 import NearLoacation from '../components/registerLocationPage/NearLoacation';
 import SearchBar from '../components/common/navBar/SearchBar';
-import useDebounce from '../hooks/useDebounce';
+import { Show } from '../components/common/ShowCase';
 
-import { DEBOUNCE_LIMIT_TIME, NEAR_LOCATION, SEARCH_LOCATION } from '../static/constants';
-import { useQuery } from 'react-query';
+import useDebounce from '../hooks/useDebounce';
 import convertConventionUtil from '../utils/convertConventionUtil';
 import { signUpAPI } from '../redux/api/authApi';
-import { Show } from '../components/common/ShowCase';
+import { DEBOUNCE_LIMIT_TIME, NEAR_LOCATION, SEARCH_LOCATION } from '../static/constants';
 
 function RegisterLocationPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +21,7 @@ function RegisterLocationPage() {
   const location = useLocation();
   const prevPath = location.state?.before;
 
+  // 전체 데이터 가져오는 API
   const { data: locationList } = useQuery(
     'location',
     () =>
@@ -33,12 +34,12 @@ function RegisterLocationPage() {
   );
 
   const onClickLocation = async (address) => {
+    console.log(address);
     try {
       if (prevPath === '/permission') {
         await signUpAPI({ addressId: address.id });
         navigate('/register-complete');
       } else {
-        // TODO modify location
         navigate('/register-location-complete');
       }
     } catch (error) {
@@ -46,10 +47,7 @@ function RegisterLocationPage() {
     }
   };
 
-  const onChangeHandler = (e) => {
-    setInputText(e.target.value);
-    // TODO: e.target.value를 포함하고 있는 데이터만 보여주기
-  };
+  const onChangeHandler = (e) => setInputText(e.target.value);
 
   useEffect(() => {
     const api = async () => {
@@ -58,11 +56,6 @@ function RegisterLocationPage() {
 
         const trimmed = inputText.trim();
         if (!trimmed) return;
-
-        console.log(searchedData);
-        // FIXME: 서버에서 inputText를 포함하는 API를 매번 호출하는건지, 맨처음에 렌더링될 때 연동한 API를 filter해서 보여주는 건지..
-        // const { locationList } = await getSearchedList({ q: inputText, page: 1 });
-        // setSearchedData(locationList);
         const filteredData = locationList?.filter((el) => el.address.includes(trimmed)) ?? [];
         setSearchedData(filteredData);
       } catch (error) {

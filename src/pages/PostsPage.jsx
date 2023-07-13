@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 import BackButton from '../components/common/navBar/BackButton';
 import FriendsProfile from '../components/common/FriendsProfile';
+import { LoadingContents } from '../components/common/loading/LoadingContents';
 import postApi from '../api/postApi';
 
 import totalGray from '../images/totalGray.png';
@@ -24,8 +26,6 @@ import vegetableGray from '../images/vegetableGray.png';
 import coffeeGray from '../images/coffeeGray.png';
 
 import { ACTUAL_PAYMENT_AMOUNT, CANCEL, CONFIRM, DIVISION, JOIN, JOIN_ALERT, SUM, WON } from '../static/constants';
-import { useSelector } from 'react-redux';
-import { LoadingContents } from '../components/common/loading/LoadingContents';
 
 function PostsPage() {
   const categoryList = [
@@ -51,7 +51,6 @@ function PostsPage() {
 
   const { user } = useSelector((state) => state.auth);
 
-  // TODO: 2. 홈에서 등록된 글을 확인하는 경우 => 서버에서 가져오는 데이터로 보여주기
   const {
     isLoading,
     data: post,
@@ -106,10 +105,8 @@ function PostsPage() {
       </div>
 
       <div className="flex justify-center">
-        {/* TODO: map 데이터로 보여주기 */}
         <img
           alt=""
-          // TODO: 정확한 사진이 올라가는지 추후 확인 필요
           src={imageUrl ? imageUrl : category.image}
           className="flex w-[360px] h-[238px] mt-[11px] bg-gray rounded-[15px] cursor-pointer"
         />

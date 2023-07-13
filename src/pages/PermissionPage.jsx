@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import OptionalPermission from '../components/permissionPage/OptionalPermission';
 import LongButton from '../components/common/LongButton';
 
@@ -23,9 +24,7 @@ import {
 
 function PermissionPage() {
   const navigate = useNavigate();
-  const handleConfirm = () => {
-    navigate('/register-location', { state: { before: '/permission' } });
-  };
+  const handleConfirm = () => navigate('/register-location', { state: { before: '/permission' } });
 
   return (
     <div className="pt-[136px] relative">

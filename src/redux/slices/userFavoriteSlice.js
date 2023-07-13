@@ -3,8 +3,6 @@ import { TOTAL_SEARCHED_OUTPUT } from '../../static/constants';
 import total from '../../images/total.png';
 import { addFavoriteAPI } from '../api/userInfoUpdateAPI';
 
-console.log(total);
-
 const userFavoriteSlice = createSlice({
   name: 'userFavorite',
   initialState: {

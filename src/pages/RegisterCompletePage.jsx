@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import ImageAndMessage from '../components/common/ImageAndMessage';
 import LongButton from '../components/common/LongButton';
 import TextBar from '../components/common/navBar/TextAndBackBar';
@@ -26,7 +27,7 @@ const RegisterCompletePage = () => {
         mainMessage={'회원가입 완료'}
         subMessage={
           <>
-            {/* data 받아와서 user.name 넣어주기 */}'{nickname}' 님의 회원가입이
+            '{nickname}' 님의 회원가입이
             <br />
             성공적으로 완료되었습니다.
           </>

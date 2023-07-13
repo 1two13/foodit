@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
+import { useSelector } from 'react-redux';
 
 import LongButton from '../components/common/LongButton';
 import Input from '../components/writingPage/Input';
@@ -8,7 +9,6 @@ import BackButton from '../components/common/navBar/BackButton';
 import postApi from '../api/postApi';
 
 import { ADD_IMAGE, ARTICLE_TITLE, DONE, MAXIMUM_PEOPLE, PLEASE_WRITE_TEXT, TOTAL_AMOUNT } from '../static/constants';
-import { useSelector } from 'react-redux';
 
 function WritingPage() {
   const options = [
@@ -90,7 +90,6 @@ function WritingPage() {
   };
 
   const onclickDoneButton = async () => {
-    // TODO: 작성한 글 데이터를 서버로 보내기, catch 및 로딩 넣기
     const postId = await postApi.writePost(
       {
         title: post.title,
